@@ -75,27 +75,47 @@
 								FST::NODE()\
 }
 
-#define EQLESS(string) {		string, \
+#define EQLESS(string)	 {		string, \
 								3, \
 								FST::NODE(1, FST::RELATION('<', 1)),\
 								FST::NODE(1, FST::RELATION('=', 2)),\
 								FST::NODE()\
 }
 
-#define EQUALS(string){			string, \
+#define EQUALS(string)	{		string, \
 								3, \
 								FST::NODE(1, FST::RELATION('=', 1)),\
 								FST::NODE(1, FST::RELATION('=', 2)),\
 								FST::NODE()\
 }
 
-#define NEQUALS(string){		string, \
+#define NEQUALS(string)	{		string, \
 								3, \
 								FST::NODE(1, FST::RELATION('!', 1)),\
 								FST::NODE(1, FST::RELATION('=', 2)),\
 								FST::NODE()\
 }
 
+#define INVERSION(string) {		string, \
+								2, \
+								FST::NODE(1,\
+								FST::RELATION('~', 1)), \
+								FST::NODE() \
+}
+
+#define CONJUCTION(string) {	string, \
+								2, \
+								FST::NODE(1,\
+								FST::RELATION('&', 1)), \
+								FST::NODE() \
+}
+
+#define DISJUNCTION(string) {	string, \
+								2, \
+								FST::NODE(1,\
+								FST::RELATION('\\', 1)), \
+								FST::NODE() \
+}
 
 #define EQ(string) { string, \
 								2, \

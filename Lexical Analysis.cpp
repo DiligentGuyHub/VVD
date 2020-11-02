@@ -206,6 +206,14 @@ namespace LT
 				Add(lex, lex_entry);
 				return lex;
 			}
+
+			FST::FST fst1(EQMORE(buffer));
+			if (FST::execute(fst1, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_EQMORE, LT_TI_NULLIDX, '1');
+				Add(lex, lex_entry);
+				return lex;
+			}
 			break;
 		}
 		case '<':
@@ -217,6 +225,16 @@ namespace LT
 				Add(lex, lex_entry);
 				return lex;
 			}
+
+			FST::FST fst1(EQLESS(buffer));
+			if (FST::execute(fst1, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_EQLESS, LT_TI_NULLIDX, '2');
+				Add(lex, lex_entry);
+				return lex;
+			}
+			break;
+
 			break;
 		}
 		case '(':
@@ -396,6 +414,36 @@ namespace LT
 			}
 			break;
 		}
+		case '~':
+		{
+			FST::FST fst(INVERSION(buffer));
+			if (FST::execute(fst, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_INVERSION, LT_TI_NULLIDX, '~');
+				Add(lex, lex_entry);
+				return lex;
+			}
+		}
+		case '&':
+		{
+			FST::FST fst(CONJUCTION(buffer));
+			if (FST::execute(fst, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_CONJUCTION, LT_TI_NULLIDX, '&');
+				Add(lex, lex_entry);
+				return lex;
+			}
+		}
+		case '\\':
+		{
+			FST::FST fst(DISJUNCTION(buffer));
+			if (FST::execute(fst, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_DISJUNCTION, LT_TI_NULLIDX, '\\');
+				Add(lex, lex_entry);
+				return lex;
+			}
+		}
 		default:
 		{
 			FST::FST fst(NUMBER(buffer));
@@ -506,14 +554,17 @@ namespace LT
 			else if (input.text[i] != ' ' && input.text[i] != '|')
 			{
 
-				if (((input.text[i] == '(' || input.text[i] == ')' || \
+				if ((input.text[i] == '(' || input.text[i] == ')' || \
 					input.text[i] == '{' || input.text[i] == '}' || \
 					input.text[i] == ',' || input.text[i] == ';' || \
 					input.text[i] == '=' || input.text[i] == '+' || \
 					input.text[i] == '-' || input.text[i] == '*' || \
-					input.text[i] == '/' || input.text[i] == '|') || \
-					input.text[i] == '!') &&
-					!readExtraSimbols)
+					input.text[i] == '/' || input.text[i] == '|' || \
+					input.text[i] == '!' || input.text[i] == '>' || \
+					input.text[i] == '<' || input.text[i] == '&' || \
+					input.text[i] == '\\' \
+					|| input.text[i] == '~') \
+					&& !readExtraSimbols) \
 				{
 					// сначала проверим то, что уже было занесено в буфер
 					bufferIndex = 0;
@@ -522,7 +573,7 @@ namespace LT
 					lexCounter++;
 					// затем передадим в чистый буфер символ и отправим на проверку
 
-					if ((input.text[i] == '=' || input.text[i] == '!') && input.text[i + 1] == '=')
+					if ((input.text[i] == '=' || input.text[i] == '!' || input.text[i] == '>' || input.text[i] == '<') && input.text[i + 1] == '=')
 					{
 						buffer[bufferIndex++] = input.text[i++];
 					}
@@ -531,6 +582,7 @@ namespace LT
 					lex = LT::CreateEntry(lex, idt, buffer, lineCounter, lexCounter);
 					*buffer = *(ClearChar(buffer));
 					lexCounter++;
+					bufferIndex = 0;
 				}
 				else
 				{
@@ -594,7 +646,7 @@ namespace LT
 			}
 			else
 			{
-				if (lex.table[i].lexema == 'v' || lex.table[i].lexema == 'c')
+				if (lex.table[i].lexema == 'v' || lex.table[i].lexema == 'c' || lex.table[i].lexema == 'b')
 					std::cout << lex.table[i].operation;
 				else
 					std::cout << lex.table[i].lexema;

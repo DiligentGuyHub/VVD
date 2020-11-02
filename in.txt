@@ -1,6 +1,6 @@
 function int Check(string mess, int num, int corr)
 {
-if(num < 10)
+if(num <= 10)
 {
 print mess;
 }
@@ -25,6 +25,9 @@ def string num = "-12";
 def sign ch = "v";
 y = 10;
 x = y - 50;
+print x&y;
+print x\y;
+print x~;
 def string str = str1 + " " + str2;
 print y;
 print num;

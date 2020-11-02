@@ -40,6 +40,10 @@
 #define LEX_EQUALS		'c' // ==
 #define LEX_NEQUALS		'c' // !=
 
+#define LEX_INVERSION	'b' // ~
+#define LEX_CONJUCTION	'b' // &
+#define LEX_DISJUNCTION	'b' // \
+
 #define LEX_PLUS		'v'
 #define LEX_MINUS		'v' 
 #define LEX_STAR		'v' 
