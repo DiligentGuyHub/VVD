@@ -1,0 +1,52 @@
+
+-------ПРОТОКОЛ:-------
+ВРЕМЯ ВЫПОЛНЕНИЯ: 02.11.2020 понедельник 19:27:34
+
+------ПАРАМЕТРЫ------
+-in:  in.txt
+-out: out.txt
+-log: log.txt
+
+------ИСХОДНЫЕ ДАННЫЕ------
+
+Всего символов: 400
+Всего строк: 33
+Всего пропущено: 0
+
+Преобразованный файл: 
+function int Check(string mess,int num,int corr)|{|if(num < 10)|{|print mess;|}|elif(num== 10)|{|num=num-1;|print mess;|}|else|{|num=corr*(num+10);|}|return num;|}|function main|{|def int x;|def pint y;|def string str1="text";|def string str2="example";|def string num="-12";|def sign ch="v";|y=10;|x=y-50;|def string str=str1+" "+str2;|print y;|print num;|return 0;|}|
+
+Таблица лексем:
+001 fti(ti,ti,ti)
+002 {
+003 ?(icl)
+004 {
+005 pi;
+006 }
+007 ?(icl)
+008 {
+009 i:ivl;
+010 pi;
+011 }
+012 e
+013 {
+014 i:iv(ivl);
+015 }
+016 ri;
+017 }
+018 fm
+019 {
+020 dti;
+021 dti;
+022 dti:l;
+023 dti:l;
+024 dti:l;
+025 dti:l;
+026 i:l;
+027 i:ivl;
+028 dti:ivlvi;
+029 pi;
+030 pi;
+031 rl;
+032 }
+033 

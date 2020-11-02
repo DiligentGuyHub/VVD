@@ -1,0 +1,39 @@
+function int Check(string message, int number, int correction)
+{
+	if(number > 10)
+	{
+	print message;
+	}
+	elif(number == 10)
+	{
+	number = number – 1;
+	print message;
+	}
+	else
+	{
+	number = correction*(number + 10);
+	}
+	return number;
+}
+function main
+{
+	def int x;
+	def pint y;
+	def string str1 = "text";
+	def string str2 = "example";
+	def string num = "-12";
+	def sign ch = "v";
+
+	y = 10;
+	x = y – 50;
+	def string str = str1 + " " + str2;
+
+	y = StrInt(num);
+	num = IntStr(x);
+
+	print SignInt(ch);
+	print y;
+	print num;
+	print StrLen(str1);
+	return 0;
+}
