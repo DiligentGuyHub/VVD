@@ -66,6 +66,12 @@ namespace LT		// таблица лексем
 		int		expressionsAmount;
 		Entry* table;					// массив строк таблицы лексем
 	};
+	
+	struct LEX
+	{
+		LT::LexTable lextable;
+		IT::IdTable idtable;
+	};
 
 	LexTable Create(					// создание таблица лексем
 		int size						// предполагаемая емкость таблицы лексем < LT_MAXSIZE

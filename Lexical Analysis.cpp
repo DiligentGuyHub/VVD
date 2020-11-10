@@ -181,7 +181,7 @@ namespace LT
 				}
 				else
 				{
-					throw ERROR_THROW(119);
+					throw ERROR_THROW(104);
 				}
 			}
 			break;
@@ -559,12 +559,10 @@ namespace LT
 					input.text[i] == ',' || input.text[i] == ';' || \
 					input.text[i] == '=' || input.text[i] == '+' || \
 					input.text[i] == '-' || input.text[i] == '*' || \
-					input.text[i] == '/' || input.text[i] == '|' || \
-					input.text[i] == '!' || input.text[i] == '>' || \
-					input.text[i] == '<' || input.text[i] == '&' || \
-					input.text[i] == '\\' \
-					|| input.text[i] == '~') \
-					&& !readExtraSimbols) \
+					input.text[i] == '/' || input.text[i] == '!' || \
+					input.text[i] == '>' || input.text[i] == '<' || \
+					input.text[i] == '&' || input.text[i] == '\\' ||\
+					input.text[i] == '~') && !readExtraSimbols) \
 				{
 					// сначала проверим то, что уже было занесено в буфер
 					bufferIndex = 0;
@@ -600,12 +598,12 @@ namespace LT
 				*buffer = *(ClearChar(buffer));
 
 				lineCounter++;
-				en.lexema = input.text[i];
+				/*en.lexema = input.text[i];
 				en.idxTI = lexCounter;
 				en.sn = lineCounter;
 				Add(lex, en);
 				lexCounter++;
-				*buffer = *(ClearChar(buffer));
+				*buffer = *(ClearChar(buffer));*/
 			}
 
 			else
@@ -627,7 +625,7 @@ namespace LT
 
 			}
 		}
-		if (!mainDefined) throw ERROR_THROW(120);
+		if (!mainDefined) throw ERROR_THROW(105);
 		lexcopy = lex;
 		//Checkout(lex, idt);
 		return;
@@ -636,26 +634,24 @@ namespace LT
 	void LexTableOut(LexTable lex)
 	{
 		std::cout << "\n00" << lex.table[0].sn << ' ';
+		int previousLine = 1;
 		for (int i = 0; i < lex.size; i++)
 		{
-			if (lex.table[i].lexema == '|')
+			if (previousLine != lex.table[i].sn)
 			{
 				std::cout << std::endl;
-				std::cout << std::setw(3) << std::setfill('0');
+				std::cout << std::setw(3) << std::right << std::setfill('0');
 				std::cout << lex.table[i].sn << ' ';
 			}
-			else
-			{
-				if (lex.table[i].lexema == 'v' || lex.table[i].lexema == 'c' || lex.table[i].lexema == 'b')
-					std::cout << lex.table[i].operation;
-				else
-					std::cout << lex.table[i].lexema;
-				/*if (lex.table[i].idxTI >= 0 && lex.table[i].idxTI < 100)
-					std::cout << "[" << lex.table[i].idxTI << "]";*/
-				if (lex.table[i].lexema == '@')
-					std::cout << "[" << lex.table[i].idxTI << "]";
-			}
-
+			/*if (lex.table[i].lexema == 'v' || lex.table[i].lexema == 'c' || lex.table[i].lexema == 'b')
+				std::cout << lex.table[i].operation;
+			else*/
+				std::cout << lex.table[i].lexema;
+			/*if (lex.table[i].idxTI >= 0 && lex.table[i].idxTI < 100)
+				cout << "[" << lex.table[i].idxTI << "]";*/
+			if (lex.table[i].lexema == '@')
+				std::cout << "[" << lex.table[i].idxTI << "]";
+			previousLine = lex.table[i].sn;
 		}
 		return;
 	}

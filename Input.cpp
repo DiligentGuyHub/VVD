@@ -18,7 +18,7 @@ namespace In {
 		std::ifstream file(infile);
 
 		if (!file.is_open())
-			throw ERROR_THROW(110);
+			throw ERROR_THROW(4);
 
 		while (in_text.size < IN_MAX_LEN_TEXT && !file.eof()) {
 			char read;
@@ -55,7 +55,7 @@ namespace In {
 				}
 				break;
 			case in_text.F:
-				throw ERROR_THROW_IN(111, in_text.lines, position)
+				throw ERROR_THROW_IN(5, in_text.lines, position)
 			default:
 				text[in_text.size] = in_text.code[simbol];
 				in_text.size++;

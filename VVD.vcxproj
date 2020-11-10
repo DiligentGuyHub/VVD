@@ -141,11 +141,14 @@
   <ItemGroup>
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="FST.cpp" />
+    <ClCompile Include="GRB.cpp" />
+    <ClCompile Include="GRB.h" />
     <ClCompile Include="IdTable.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Lexical Analysis.cpp" />
     <ClCompile Include="LexTable.cpp" />
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="MFST.cpp" />
     <ClCompile Include="Output.cpp" />
     <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="Regular Expressions.cpp" />
@@ -159,6 +162,7 @@
     <ClInclude Include="Lexical Analysis.h" />
     <ClInclude Include="LexTable.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="MFST.h" />
     <ClInclude Include="Output.h" />
     <ClInclude Include="Parameters.h" />
     <ClInclude Include="VVD.h" />

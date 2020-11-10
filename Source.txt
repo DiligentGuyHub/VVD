@@ -1,39 +1,36 @@
-function int Check(string message, int number, int correction)
+function int Check(string mess, int num, int corr)
 {
-	if(number > 10)
-	{
-	print message;
-	}
-	elif(number == 10)
-	{
-	number = number – 1;
-	print message;
-	}
-	else
-	{
-	number = correction*(number + 10);
-	}
-	return number;
+if(num <= 10)
+{
+print mess;
 }
+elif(num == 10)
+{
+num = num - 1;
+print mess;
+}
+else
+{
+num = corr*(num + 10);
+}
+return num;
+};
+
 function main
 {
-	def int x;
-	def pint y;
-	def string str1 = "text";
-	def string str2 = "example";
-	def string num = "-12";
-	def sign ch = "v";
-
-	y = 10;
-	x = y – 50;
-	def string str = str1 + " " + str2;
-
-	y = StrInt(num);
-	num = IntStr(x);
-
-	print SignInt(ch);
-	print y;
-	print num;
-	print StrLen(str1);
-	return 0;
-}
+def int x;
+def pint y;
+def string str1 = "text";
+def string str2 = "example";
+def string num = "-12";
+def sign ch = "v";
+y = 10;
+x = y - 50;
+print x&y;
+print x\y;
+print x~;
+def string str = str1 + " " + str2;
+print y;
+print num;
+return 0;
+};

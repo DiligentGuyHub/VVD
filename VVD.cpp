@@ -1,5 +1,4 @@
 ﻿#include "VVD.h"
-#include "Error.h"
 #include "Parameters.h"
 #include "Log.h"
 #include "Input.h"
@@ -8,6 +7,7 @@
 #include "LexTable.h"
 #include "IdTable.h"
 #include "Lexical Analysis.h"
+#include "MFST.h"
 
 int main(int argc, char* argv[])
 {
@@ -25,6 +25,17 @@ int main(int argc, char* argv[])
 		Out::Output(input, parm.out);
 
 		LexTableFill(lex, lexcopy, input, idt);
+		LT::LEX Lex = { lex, idt };
+
+		MFST_TRACE_START
+			MFST::Mfst mfst(Lex, GRB::getGreibach());
+		mfst.start();
+
+		mfst.savededucation();
+		mfst.printrules();
+
+		system("pause");
+
 		LexTableOut(lex);
 		IdTableOut(idt);
 

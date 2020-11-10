@@ -8,7 +8,7 @@ namespace Log {
 		log.stream = new std::ofstream; // создание потока вывода для элемента структуры LOG
 		log.stream->open(log_file); // присваивание имени файла для потока вывода
 		if (!log.stream->is_open())
-			throw ERROR_THROW(112);
+			throw ERROR_THROW(6);
 		strcpy_s(log.logfile, log_file); // корпирование файла log_file в структуру
 		return log;
 	}

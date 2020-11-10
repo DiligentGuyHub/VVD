@@ -12,7 +12,7 @@ namespace LT {
 
 	LexTable Create(int size)
 	{
-		if (size > LT_MAXSIZE) throw ERROR_THROW(114);
+		if (size > LT_MAXSIZE) throw ERROR_THROW(100);
 		LexTable lex;
 		lex.maxsize = size;
 		lex.size = 0;
@@ -23,7 +23,7 @@ namespace LT {
 
 	void Add(LexTable& lex, Entry entry)
 	{
-		if (lex.size == lex.maxsize) throw ERROR_THROW(115);
+		if (lex.size == lex.maxsize) throw ERROR_THROW(101);
 		lex.table[lex.size++] = entry;
 		return;
 	}
@@ -34,12 +34,12 @@ namespace LT {
 		{
 			if (lex.table[i].idxTI == n) return lex.table[i];
 		}
-		throw ERROR_THROW(117);
+		throw ERROR_THROW(102);
 	}
 
 	void Delete(LexTable& lex)
 	{
-		if (lex.table == nullptr) throw ERROR_THROW(118);
+		if (lex.table == nullptr) throw ERROR_THROW(103);
 		lex.maxsize = 0;
 		lex.size = 0;
 		delete[] lex.table;

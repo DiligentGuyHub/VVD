@@ -1,20 +1,8 @@
 function int Check(string mess, int num, int corr)
 {
-if(num <= 10)
-{
-print mess;
-}
-elif(num == 10)
-{
-num = num - 1;
-print mess;
-}
-else
-{
-num = corr*(num + 10);
-}
 return num;
-}
+};
+
 function main
 {
 def int x;
@@ -32,4 +20,4 @@ def string str = str1 + " " + str2;
 print y;
 print num;
 return 0;
-}
+};

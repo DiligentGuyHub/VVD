@@ -17,7 +17,7 @@ namespace Parm
 		for (int i = 1; i < argc; i++) {
 
 			if (strlen(argv[i]) > PARM_MAX_SIZE)
-				throw ERROR_THROW(104);
+				throw ERROR_THROW(3);
 
 			if (strstr(argv[i], PARM_IN)) { // проверка на наличие параметра -in (strict)
 				strcpy_s(parm.in, argv[i] + strlen(PARM_IN));
@@ -34,7 +34,7 @@ namespace Parm
 			}
 		}
 		if (!in_)
-			throw ERROR_THROW(100); // ошибка, -in является обязательным параметром
+			throw ERROR_THROW(2); // ошибка, -in является обязательным параметром
 		if (!out_) {
 			strcpy_s(parm.out, parm.in); // исключение, out = in
 			strcat_s(parm.out, PARM_OUT_DEFAULT_EXT);

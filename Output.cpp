@@ -17,7 +17,7 @@ namespace Out {
 		ofstream file(outfile);
 
 		if (!file.is_open())
-			throw ERROR_THROW(113);
+			throw ERROR_THROW(7);
 		/*if (text[in_text.size - 1] == ')' || text[in_text.size - 1] == ';' || text[in_text.size - 1] == '{' || text[in_text.size - 1] == '}') {
 			text[in_text.size + 1] = in_text.code[simbol];
 			text[in_text.size] = '|';

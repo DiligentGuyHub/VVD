@@ -32,7 +32,7 @@ namespace IT
 			struct
 			{
 				bool value;
-				char str[5];
+				char str[6];
 			}vbool;
 		}value;		// значение идентификатора
 	};

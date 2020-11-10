@@ -8,7 +8,7 @@ namespace IT {
 
 	IdTable Create(int size)
 	{
-		if (size > IT_MAXSIZE) throw ERROR_THROW(119);
+		if (size > IT_MAXSIZE) throw ERROR_THROW(106);
 		IdTable idt;
 		idt.maxsize = size;
 		idt.size = 0;
@@ -20,7 +20,7 @@ namespace IT {
 
 	void Add(IdTable& idt, Entry entry, int line, int id)
 	{
-		if (idt.size >= idt.maxsize) throw ERROR_THROW(123);
+		if (idt.size >= idt.maxsize) throw ERROR_THROW(107);
 
 		for (int i = 0; i < idt.size; i++)
 		{
@@ -38,7 +38,7 @@ namespace IT {
 		return;
 	}
 
-	void UpdatePrevious(IdTable& idt, Entry entry, bool isNumber)
+	/*void UpdatePrevious(IdTable& idt, Entry entry, bool isNumber)
 	{
 		for (int i = 0; i < idt.size; i++)
 		{
@@ -60,7 +60,7 @@ namespace IT {
 			}
 		}
 		return;
-	}
+	}*/
 
 	Entry GetEntry(IdTable& idtable, int n)
 	{
@@ -68,7 +68,7 @@ namespace IT {
 		{
 			return idtable.table[n];
 		}
-		throw ERROR_THROW(124);
+		throw ERROR_THROW(108);
 	}
 
 	int IsId(IdTable& idtable, char* id, char* scope) // scope = functionName
@@ -95,7 +95,7 @@ namespace IT {
 
 	void Delete(IdTable& idtable)
 	{
-		if (idtable.table == nullptr) throw ERROR_THROW(125);
+		if (idtable.table == nullptr) throw ERROR_THROW(109);
 		idtable.maxsize = 0;
 		idtable.size = 0;
 		delete[] idtable.table;
