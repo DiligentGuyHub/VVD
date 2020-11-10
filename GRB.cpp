@@ -13,37 +13,42 @@ namespace GRB
 		Rule(
 			NS('S'), GRB_ERROR_SERIES + 0,
 			5,
+			Rule::Chain(13, TS('f'), TS('t'), TS('i'), TS('('), NS('F'), TS(')'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S')),
 			Rule::Chain(8,	TS('f'), TS('m'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}')),
 			Rule::Chain(7,  TS('f'), TS('m'), TS('{'), TS('r'), NS('E'), TS(';'), TS('}')),
-			Rule::Chain(13, TS('f'), TS('t'), TS('i'), TS('('), NS('F'), TS(')'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S')),
 			Rule::Chain(9,	TS('f'), TS('m'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S')),
 			Rule::Chain(8,	TS('f'), TS('m'), TS('{'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S'))
 		),
 		Rule(
 			NS('N'), GRB_ERROR_SERIES + 1,
-			17,
-			Rule::Chain(8,	TS('?'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'), NS('N')),
+			15,
+			/*Rule::Chain(8,	TS('?'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'), NS('N')),
 			Rule::Chain(12, TS('?'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'),
 							TS('e'), TS('{'), NS('N'), TS('}'), NS('N')
 			),
 			Rule::Chain(19, TS('?'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'),
-						    TS('?'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'),
+						    TS('z'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'),
 						    TS('e'), TS('{'), NS('N'), TS('}'), NS('N')
-			),
+			),*/
 			Rule::Chain(5, TS('d'), TS('t'), TS('i'), TS(';'), NS('N')),
-			Rule::Chain(6, TS('d'), TS('t'), TS('i'), TS(':'), NS('E'), TS(';')),
 			Rule::Chain(7, TS('d'), TS('t'), TS('i'), TS(':'), NS('E'), TS(';'), NS('N')),
 			Rule::Chain(4, TS('i'), TS(':'), NS('E'), TS(';')),
 			Rule::Chain(5, TS('i'), TS(':'), NS('E'), TS(';'), NS('N')),
+
+			Rule::Chain(2, TS('?'), NS('I')),
+			Rule::Chain(3, TS('?'), NS('I'), NS('N')),
+
 			Rule::Chain(9, TS('d'), TS('t'), TS('f'), TS('i'), TS('('), NS('F'), TS(')'), TS(';'), NS('N')),
 			Rule::Chain(4, TS('p'), TS('i'), TS(';'), NS('N')),
+
 			Rule::Chain(4, TS('p'), TS('l'), TS(';'), NS('N')),
 			Rule::Chain(4, TS('p'), NS('E'), TS(';'), NS('N')),
+			Rule::Chain(3, TS('p'), TS('i'), TS(';')),
+			Rule::Chain(3, TS('p'), TS('l'), TS(';')),
+
 			Rule::Chain(3, TS('p'), NS('E'), TS(';')),
 			Rule::Chain(4, TS('d'), TS('t'), TS('i'), TS(';')),
-			Rule::Chain(8, TS('d'), TS('t'), TS('f'), TS('i'), TS('('), NS('F'), TS(')'), TS(';')),
-			Rule::Chain(3, TS('p'), TS('i'), TS(';')),
-			Rule::Chain(3, TS('p'), TS('l'), TS(';'))
+			Rule::Chain(8, TS('d'), TS('t'), TS('f'), TS('i'), TS('('), NS('F'), TS(')'), TS(';'))
 		),
 		Rule(
 			NS('E'), GRB_ERROR_SERIES + 2,
@@ -84,7 +89,7 @@ namespace GRB
 		Rule(
 			NS('B'), GRB_ERROR_SERIES + 6,
 			3,
-			Rule::Chain(1, TS('b')),
+			Rule::Chain(1, TS('q')),
 			Rule::Chain(2, TS('b'), NS('E')),
 			Rule::Chain(3, TS('b'), NS('E'), NS('B'))
 		),
@@ -95,16 +100,18 @@ namespace GRB
 			Rule::Chain(3, TS('c'), NS('E'), NS('L'))
 		),
 		Rule(
+			NS('I'), GRB_ERROR_SERIES + 8,
+			4,
+			Rule::Chain(6, TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}')),
+			Rule::Chain(7,	TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'), NS('I')),
+			Rule::Chain(8, TS('z'), TS('('), NS('X'), TS(')'), TS('{'), NS('N'), TS('}'), NS('I')),
+			Rule::Chain(4,	TS('e'), TS('{'), NS('N'), TS('}'))
+		),
+		Rule(
 			NS('X'), GRB_ERROR_SERIES + 9,
 			2,
 			Rule::Chain(2, TS('i'), NS('L')),
 			Rule::Chain(2, TS('l'), NS('L'))
-		),
-		Rule(
-			NS('I'), GRB_ERROR_SERIES + 8,
-			2,
-			Rule::Chain(9, TS('?'), TS('('), TS('i'), NS('L'), TS(')'), TS('{'), NS('N'), TS('}'), NS('N')),
-			Rule::Chain(9, TS('?'), TS('('), TS('l'), NS('L'), TS(')'), TS('{'), NS('N'), TS('}'), NS('N'))
 		)
 	);
 

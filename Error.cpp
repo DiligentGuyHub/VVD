@@ -43,8 +43,7 @@ namespace Error {
 		ERROR_ENTRY(606, "[SYN]: Ошибка в битовой операции"),
 		ERROR_ENTRY(607, "[SYN]: Ошибка в логической операции"),
 		ERROR_ENTRY(608, "[SYN]: Ошибка в условной конструкции"),
-
-		ERROR_ENTRY_NODEF(609),
+		ERROR_ENTRY(609, "[SYN]: Ошибка в выражении условной конструкции"),
 
 		ERROR_ENTRY_NODEF10(610),
 		ERROR_ENTRY_NODEF10(620),

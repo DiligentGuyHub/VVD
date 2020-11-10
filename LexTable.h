@@ -22,7 +22,7 @@
 #define LEX_PRINT		'p' // print
 
 #define LEX_IF			'?' // if
-#define LEX_ELIF		'?' // elif
+#define LEX_ELIF		'z' // elif
 #define LEX_ELSE		'e' // else
 
 #define LEX_SEMICOLON	';'	// ;
@@ -40,7 +40,7 @@
 #define LEX_EQUALS		'c' // ==
 #define LEX_NEQUALS		'c' // !=
 
-#define LEX_INVERSION	'b' // ~
+#define LEX_INVERSION	'q' // ~
 #define LEX_CONJUCTION	'b' // &
 #define LEX_DISJUNCTION	'b' // \
 

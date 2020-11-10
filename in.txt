@@ -13,7 +13,6 @@ else
 {
 num = corr*(num + 10);
 }
-def int z = 5;
 return num;
 }
 
