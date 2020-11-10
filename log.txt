@@ -1,6 +1,6 @@
 
 -------ÏĞÎÒÎÊÎË:-------
-ÂĞÅÌß ÂÛÏÎËÍÅÍÈß: 10.11.2020 âòîğíèê 18:13:37
+ÂĞÅÌß ÂÛÏÎËÍÅÍÈß: 10.11.2020 âòîğíèê 18:44:21
 
 ------ÏÀĞÀÌÅÒĞÛ------
 -in:  in.txt
@@ -9,12 +9,12 @@
 
 ------ÈÑÕÎÄÍÛÅ ÄÀÍÍÛÅ------
 
-Âñåãî ñèìâîëîâ: 346
-Âñåãî ñòğîê: 24
+Âñåãî ñèìâîëîâ: 448
+Âñåãî ñòğîê: 37
 Âñåãî ïğîïóùåíî: 0
 
 Ïğåîáğàçîâàííûé ôàéë: 
-function int Check(string mess,int num,int corr)|{|def bool z=num >;|return num;|};||function main|{|def int x;|def pint y;|def string str1="text";|def string str2="example";|def string num="-12";|def sign ch="v";|y=10;|x=y-50;|print x&y;|print x\y;|print x~;|def string str=str1+" "+str2;|print y;|print num;|return 0;|};
+function int Check(string mess,int num,int corr)|{|if(num <=10)|{|print mess;|}|elif(num== 10)|{|num=num-1;|print mess;|}|else|{|num=corr*(num+10);|}|def int z=5;|return num;|}||function main|{|def int x;|def pint y;|def string str1="text";|def string str2="example";|def string num="-12";|def sign ch="v";|y=10;|x=y-50;|print x&y;|print x\y;|print x~;|def string str=str1+" "+str2;|print y;|print num;|return 0;|}
 
 Òàáëèöà ëåêñåì:
-001 fti(ti,ti,ti){dti:ic;ri;};fm{dti;dti;dti:l;dti:l;dti:l;dti:l;i:l;i:ivl;pibi;pibi;pib;dti:ivlvi;pi;pi;rl;};
+001 fti(ti,ti,ti){?(icl){pi;}?(icl){i:ivl;pi;}e{i:iv(ivl);}dti:l;ri;}fm{dti;dti;dti:l;dti:l;dti:l;dti:l;i:l;i:ivl;pibi;pibi;pib;dti:ivlvi;pi;pi;rl;}
