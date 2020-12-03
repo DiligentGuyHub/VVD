@@ -152,6 +152,7 @@
     <ClCompile Include="Output.cpp" />
     <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="Regular Expressions.cpp" />
+    <ClCompile Include="Semantic Analysis.cpp" />
     <ClCompile Include="VVD.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +166,7 @@
     <ClInclude Include="MFST.h" />
     <ClInclude Include="Output.h" />
     <ClInclude Include="Parameters.h" />
+    <ClInclude Include="Semantic Analysis.h" />
     <ClInclude Include="VVD.h" />
   </ItemGroup>
   <ItemGroup>

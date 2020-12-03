@@ -13,84 +13,114 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\1. Lexical Analysis">
+      <UniqueIdentifier>{863b676b-e9e6-43b0-be99-5528f6109e7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\3. Semantic Analysis">
+      <UniqueIdentifier>{71a7b363-4bcd-4fc5-905e-2550f1c272ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\0. Files processing">
+      <UniqueIdentifier>{ac7bfc81-fd0b-4393-b5c8-b80908d496f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\2. Syntax Analysis">
+      <UniqueIdentifier>{0fac2795-8442-469a-96d5-08912d8d10fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\0. Files processing">
+      <UniqueIdentifier>{10d4c2d8-edb6-48f7-aabf-026e4281e719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\1. Lexical Analysis">
+      <UniqueIdentifier>{9e03fa0b-d5cb-4ce3-b136-9d6dae9ddc07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\2. Syntax Analysis">
+      <UniqueIdentifier>{9b3ac87d-2382-4c15-9158-1b8504966188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\3. Semantic Analysis">
+      <UniqueIdentifier>{c4066426-bc4d-4f45-abf2-c75af646ea80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VVD.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Error.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Output.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Parameters.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Lexical Analysis.cpp">
+      <Filter>Исходные файлы\1. Lexical Analysis</Filter>
     </ClCompile>
     <ClCompile Include="LexTable.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\1. Lexical Analysis</Filter>
     </ClCompile>
     <ClCompile Include="IdTable.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Lexical Analysis.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="FST.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Regular Expressions.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="GRB.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClCompile>
-    <ClCompile Include="GRB.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\1. Lexical Analysis</Filter>
     </ClCompile>
     <ClCompile Include="MFST.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\2. Syntax Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="GRB.cpp">
+      <Filter>Исходные файлы\2. Syntax Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="FST.cpp">
+      <Filter>Исходные файлы\1. Lexical Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="Regular Expressions.cpp">
+      <Filter>Исходные файлы\1. Lexical Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="Semantic Analysis.cpp">
+      <Filter>Исходные файлы\3. Semantic Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="Error.cpp">
+      <Filter>Исходные файлы\0. Files processing</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Исходные файлы\0. Files processing</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Исходные файлы\0. Files processing</Filter>
+    </ClCompile>
+    <ClCompile Include="Output.cpp">
+      <Filter>Исходные файлы\0. Files processing</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameters.cpp">
+      <Filter>Исходные файлы\0. Files processing</Filter>
+    </ClCompile>
+    <ClCompile Include="GRB.h">
+      <Filter>Файлы заголовков\2. Syntax Analysis</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Error.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="FST.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="IdTable.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Lexical Analysis.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Output.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Parameters.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="VVD.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Error.h">
+      <Filter>Файлы заголовков\0. Files processing</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Файлы заголовков\0. Files processing</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Файлы заголовков\0. Files processing</Filter>
+    </ClInclude>
+    <ClInclude Include="Output.h">
+      <Filter>Файлы заголовков\0. Files processing</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameters.h">
+      <Filter>Файлы заголовков\0. Files processing</Filter>
+    </ClInclude>
+    <ClInclude Include="FST.h">
+      <Filter>Файлы заголовков\1. Lexical Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="IdTable.h">
+      <Filter>Файлы заголовков\1. Lexical Analysis</Filter>
+    </ClInclude>
     <ClInclude Include="LexTable.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Файлы заголовков\1. Lexical Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="Lexical Analysis.h">
+      <Filter>Файлы заголовков\1. Lexical Analysis</Filter>
     </ClInclude>
     <ClInclude Include="MFST.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Файлы заголовков\2. Syntax Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="Semantic Analysis.h">
+      <Filter>Файлы заголовков\3. Semantic Analysis</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 function int Check(string mess, int num, int corr)
 {
+def bool check;
 if(num <= 10)
 {
 print mess;
