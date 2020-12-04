@@ -28,7 +28,12 @@ namespace LT
 		LexTable lex
 	);
 
-	char* ClearChar(char* buffer);
+	char* ClearChar(
+		char* buffer
+	);
 
+	int ConvertToDecimal(
+		char* buffer
+	);
 
 }
