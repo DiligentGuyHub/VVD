@@ -1,4 +1,5 @@
 #include "Lexical Analysis.h"
+#include <math.h>
 
 namespace LT
 {
@@ -363,6 +364,54 @@ namespace LT
 				Add(lex, lex_entry);
 				return lex;
 			}
+
+			FST::FST nfst(NEG_NUMBER10(buffer));
+			if (FST::execute(nfst, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::INT;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				id_entry.value.vint = atoi(buffer);
+				strcpy_s(id_entry.id, "[INT]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+			}
+
+			FST::FST fst2(NEG_NUMBER2(buffer));
+			if (FST::execute(fst2, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::INT;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				id_entry.value.vint = ConvertToDecimal(buffer);
+				strcpy_s(id_entry.id, "[INT2]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+			}
+
+			FST::FST fst8(NEG_NUMBER8(buffer));
+			if (FST::execute(fst8, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::INT;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				id_entry.value.vint = ConvertToDecimal(buffer);
+				strcpy_s(id_entry.id, "[INT8]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+			}
 		}
 		case '*':
 		{
@@ -446,7 +495,7 @@ namespace LT
 		}
 		default:
 		{
-			FST::FST fst(NUMBER(buffer));
+			FST::FST fst(NUMBER10(buffer));
 			if (FST::execute(fst, line))
 			{
 				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
@@ -461,7 +510,38 @@ namespace LT
 				Add(lex, lex_entry);
 				return lex;
 			}
-			break;
+
+			FST::FST fst2(NUMBER2(buffer));
+			if (FST::execute(fst2, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::INT;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				id_entry.value.vint = ConvertToDecimal(buffer);
+				strcpy_s(id_entry.id, "[INT2]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+			}
+			FST::FST fst8(NUMBER8(buffer));
+			if (FST::execute(fst8, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::INT;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				id_entry.value.vint = ConvertToDecimal(buffer);
+				strcpy_s(id_entry.id, "[INT8]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+			}
+
 		}
 		}
 
@@ -543,14 +623,39 @@ namespace LT
 				buffer[bufferIndex] = input.text[i];
 				bufferIndex++;
 			}
-
 			else if (input.text[i] == '\0')
 			{
 				bufferIndex = 0;
 				*buffer = *(ClearChar(buffer));
 				break;
 			}
+			else if (input.text[i] == '-' && buffer[0] == '\0' &&(\
+				lex.table[lex.size - 1].lexema == 'r' || lex.table[lex.size - 1].lexema == '='	||\
+				lex.table[lex.size - 1].lexema == ':' || lex.table[lex.size - 1].lexema == '('	||\
+				lex.table[lex.size - 1].lexema == '?' || lex.table[lex.size - 1].lexema == 'z'	  \
+				))
+			{
+				buffer[bufferIndex] = input.text[i++];
+				bufferIndex++;
+				// после унарного минуса помещаем в буфер все цифры числа
+				while (48 <= int(input.text[i]) && int(input.text[i]) <= 57 || input.text[i] == '.')
+				{
+					buffer[bufferIndex] = input.text[i++];
+					bufferIndex++;
+				}
+				// отправл€ем отрицательное число на проверку регул€рного выражени€
+				lex = LT::CreateEntry(lex, idt, buffer, lineCounter, lexCounter);
+				*buffer = *(ClearChar(buffer));
+				lexCounter++;
+				bufferIndex = 0;
+				// передадим в буфер следующий за числом символ, ; + - * / и т.д.
+				buffer[bufferIndex] = input.text[i];
+				lex = LT::CreateEntry(lex, idt, buffer, lineCounter, lexCounter);
+				*buffer = *(ClearChar(buffer));
+				lexCounter++;
+				bufferIndex = 0;
 
+			}
 			else if (input.text[i] != ' ' && input.text[i] != '|')
 			{
 
@@ -577,19 +682,17 @@ namespace LT
 					}
 
 					buffer[bufferIndex] = input.text[i];
-					lex = LT::CreateEntry(lex, idt, buffer, lineCounter, lexCounter);
-					*buffer = *(ClearChar(buffer));
-					lexCounter++;
 					bufferIndex = 0;
+					lex = LT::CreateEntry(lex, idt, buffer, lineCounter, lexCounter);
+					lexCounter++;
+					*buffer = *(ClearChar(buffer));
 				}
 				else
 				{
 					buffer[bufferIndex] = input.text[i];
 					bufferIndex++;
 				}
-
 			}
-
 			else if (input.text[i] == '|')
 			{
 				bufferIndex = 0;
@@ -598,17 +701,9 @@ namespace LT
 				*buffer = *(ClearChar(buffer));
 
 				lineCounter++;
-				/*en.lexema = input.text[i];
-				en.idxTI = lexCounter;
-				en.sn = lineCounter;
-				Add(lex, en);
-				lexCounter++;
-				*buffer = *(ClearChar(buffer));*/
 			}
-
 			else
 			{
-
 				if (readExtraSimbols == false)
 				{
 					bufferIndex = 0;
@@ -616,18 +711,15 @@ namespace LT
 					lexCounter++;
 					*buffer = *(ClearChar(buffer));
 				}
-
 				else
 				{
 					buffer[bufferIndex] = input.text[i];
 					bufferIndex++;
 				}
-
 			}
 		}
 		if (!mainDefined) throw ERROR_THROW(105);
 		lexcopy = lex;
-		//Checkout(lex, idt);
 		return;
 	}
 
@@ -663,5 +755,24 @@ namespace LT
 			buffer[i] = '\0';
 		}
 		return buffer;
+	}
+
+	int ConvertToDecimal(char* buffer)
+	{	
+		// ... + int(buffer[0] == '-' на случай, если число отрицательное
+		// тогда логическое выражение вернет единицу и она добавитс€ ко всем индексам
+		int radix = buffer[0 + int(buffer[0] == '-')] - '0';
+		int counter = 0;
+		int result = 0;
+		for (int i = 2 + int(buffer[0] == '-'); buffer[i] != '\0'; i++)
+		{
+			counter++;
+		}
+		for (int i = 2 + int(buffer[0] == '-'); buffer[i] != '\0'; i++)
+		{
+			result += (buffer[i] - '0') * pow(radix, --counter);
+		}
+		
+		return (buffer[0] == '-') ? -result : result;
 	}
 }
