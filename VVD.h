@@ -4,7 +4,3 @@
 #include <fstream>
 #include <stack>
 #include <string>
-
-// control panel
-
-//#define DEBUG_MODE

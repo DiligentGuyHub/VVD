@@ -17,13 +17,8 @@ namespace IT
 		char		id[ID_MAXSIZE];	// идентификатор (автоматически усекается до ID_MAXSIZE)
 		IDDATATYPE	iddatatype;		// тип данных
 		IDTYPE		idtype;			// тип идентификатора
-
-		int			numbersystem;	// система счисления
-		bool		initialized;	// иницилизирован ли?
-
-		int			index;					// глубина вхождения 
-		char		function[ID_MAXSIZE];	// функция, которой принадлежит
-
+		int			index;
+		char		function[ID_MAXSIZE];
 		struct		// 
 		{
 			int vint;							// значение integer

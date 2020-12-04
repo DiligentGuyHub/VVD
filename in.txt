@@ -1,6 +1,5 @@
 function int Check(string mess, int num, int corr)
 {
-def int a = -2.1010 + (-8.15); 
 def bool check;
 if(num <= 10)
 {
@@ -22,12 +21,11 @@ function main
 {
 def int x;
 def pint y;
-def int z = 8.10;
-def string str1 = "текст?!";
-def string str2 = "Example+";
+def string str1 = "text";
+def string str2 = "example";
 def string num = "-12";
 def sign ch = "v";
-y = 2.1010;
+y = 10;
 x = y - 50;
 print x&y;
 print x\y;

@@ -33,16 +33,16 @@
 #define LEX_RIGHTHESIS	')' // )
 #define LEX_EQUAL		':' // =
 
-#define LEX_MORE		'v' // >
-#define LEX_LESS		'v' // <
-#define	LEX_EQMORE		'v' // >=
-#define LEX_EQLESS		'v' // <=
-#define LEX_EQUALS		'v' // ==
-#define LEX_NEQUALS		'v' // !=
+#define LEX_MORE		'c' // >
+#define LEX_LESS		'c' // <
+#define	LEX_EQMORE		'c' // >=
+#define LEX_EQLESS		'c' // <=
+#define LEX_EQUALS		'c' // ==
+#define LEX_NEQUALS		'c' // !=
 
-#define LEX_INVERSION	'v' // ~
-#define LEX_CONJUCTION	'v' // &
-#define LEX_DISJUNCTION	'v' // \
+#define LEX_INVERSION	'q' // ~
+#define LEX_CONJUCTION	'b' // &
+#define LEX_DISJUNCTION	'b' // \
 
 #define LEX_PLUS		'v'
 #define LEX_MINUS		'v' 
@@ -54,7 +54,7 @@ namespace LT		// таблица лексем
 	struct Entry	// строка таблицы лексем
 	{
 		char			lexema;					// лексема
-		char			operation;				// если лексема является операцией
+		char			operation;
 		int				sn;						// номер строки в исходном тексте
 		int				idxTI;					// индекс в таблице идентификаторов (или LT_TI_NULLIDX)
 	};

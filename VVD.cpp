@@ -27,10 +27,8 @@ int main(int argc, char* argv[])
 		LexTableFill(lex, lexcopy, input, idt);
 		LT::LEX Lex = { lex, idt };
 
-#ifdef DEBUG_MODE
 		MFST_TRACE_START
-#endif
-		MFST::Mfst mfst(Lex, GRB::getGreibach());
+			MFST::Mfst mfst(Lex, GRB::getGreibach());
 		mfst.start();
 
 		mfst.savededucation();
