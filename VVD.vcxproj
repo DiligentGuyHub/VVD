@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code Generation.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="FST.cpp" />
     <ClCompile Include="GRB.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="VVD.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code Generation.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="FST.h" />
     <ClInclude Include="IdTable.h" />

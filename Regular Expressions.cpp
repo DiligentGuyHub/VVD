@@ -46,6 +46,25 @@
 							FST::NODE() \
 }
 
+#define TRUE(string)		{	string, \
+							5, \
+							FST::NODE(1, FST::RELATION('T', 1)), \
+							FST::NODE(1, FST::RELATION('r', 2)), \
+							FST::NODE(1, FST::RELATION('u', 3)), \
+							FST::NODE(1, FST::RELATION('e', 4)), \
+							FST::NODE() \
+}
+	
+#define FALSE(string)		{	string, \
+							6, \
+							FST::NODE(1, FST::RELATION('F', 1)), \
+							FST::NODE(1, FST::RELATION('a', 2)), \
+							FST::NODE(1, FST::RELATION('l', 3)), \
+							FST::NODE(1, FST::RELATION('s', 4)), \
+							FST::NODE(1, FST::RELATION('e', 5)), \
+							FST::NODE() \
+}
+
 #define OP(string)	{           string, \
 								2, \
 								FST::NODE(4,\
@@ -556,10 +575,10 @@
 										FST::RELATION('(', n), FST::RELATION(')', n), \
 										FST::RELATION('{', n), FST::RELATION('}', n) \
 
-#define LITERAL(string) { string, \
+#define STR_LITERAL(string) { string, \
 							4, \
 							FST::NODE(1,	FST::RELATION('"',1)), \
-							FST::NODE(295,	\
+							FST::NODE(294,	\
 											LATIN(1), \
 											CYRILLIC(1), \
 											NUMSANDOPS(1), \
@@ -569,6 +588,19 @@
 											NUMSANDOPS(2), \
 											PUNCTUATION(2) \
 											),\
-											FST::NODE(1, FST::RELATION('"',3)), \
-											FST::NODE() \
+							FST::NODE(1, FST::RELATION('"',3)), \
+							FST::NODE() \
+}
+
+#define SIGN_LITERAL(string) { string, \
+							4, \
+							FST::NODE(1,	FST::RELATION('"',1)), \
+							FST::NODE(174,	\
+											LATIN(2),\
+											CYRILLIC(2), \
+											NUMSANDOPS(2), \
+											PUNCTUATION(2) \
+											),\
+							FST::NODE(1, FST::RELATION('"',3)), \
+							FST::NODE() \
 }

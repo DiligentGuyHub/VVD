@@ -5,19 +5,24 @@ namespace LT
 {
 	IT::IDDATATYPE previousDataType = IT::NONE;
 	IT::IDTYPE previousType = IT::V;
+	LT::OPERATIONTYPE optype;
 	bool withinIf = false;
 	bool withinElse = false;
+
+	bool withinCall = false;
+
 	bool mainDefined = false;
 	bool typeDefined = false;
 	char function[10][10];
 	int index = -1;
 
-	void LexEntryFill(LT::Entry &lex_entry, int line, char lexema, int idxTi, char operation)
+	void LexEntryFill(LT::Entry &lex_entry, int line, char lexema, int idxTi, char operation, OPERATIONTYPE operationtype)
 	{
 		lex_entry.lexema = lexema;
 		lex_entry.idxTI = idxTi;
 		lex_entry.sn = line;
 		lex_entry.operation = operation;
+		lex_entry.operationtype = operationtype;
 		return;
 	}
 
@@ -32,7 +37,7 @@ namespace LT
 
 	LexTable& CreateEntry(LexTable& lex, IT::IdTable& idt, char* buffer, int line, int id)
 	{
-		if (line == 14)
+		if (line > 1 && !strcmp(buffer, "Check"))
 		{
 			line += 0;
 		}
@@ -157,6 +162,7 @@ namespace LT
 			FST::FST fst(FUNCTION(buffer));
 			if (FST::execute(fst, line))
 			{
+				//withinFunction = true;
 				previousType = IT::F;
 				index += 1;
 				LexEntryFill(lex_entry, line, LEX_FUNCTION, LT_TI_NULLIDX);
@@ -203,7 +209,7 @@ namespace LT
 			FST::FST fst(MORE(buffer));
 			if (FST::execute(fst, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_MORE, LT_TI_NULLIDX, '>');
+				LexEntryFill(lex_entry, line, LEX_MORE, LT_TI_NULLIDX, '>', LT::L);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -211,7 +217,7 @@ namespace LT
 			FST::FST fst1(EQMORE(buffer));
 			if (FST::execute(fst1, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_EQMORE, LT_TI_NULLIDX, '1');
+				LexEntryFill(lex_entry, line, LEX_EQMORE, LT_TI_NULLIDX, '1', LT::L);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -222,7 +228,7 @@ namespace LT
 			FST::FST fst(LESS(buffer));
 			if (FST::execute(fst, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_LESS, LT_TI_NULLIDX, '<');
+				LexEntryFill(lex_entry, line, LEX_LESS, LT_TI_NULLIDX, '<', LT::L);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -230,7 +236,7 @@ namespace LT
 			FST::FST fst1(EQLESS(buffer));
 			if (FST::execute(fst1, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_EQLESS, LT_TI_NULLIDX, '2');
+				LexEntryFill(lex_entry, line, LEX_EQLESS, LT_TI_NULLIDX, '2', LT::L);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -304,6 +310,11 @@ namespace LT
 			FST::FST fst(SEMICOLON(buffer));
 			if (FST::execute(fst, line))
 			{
+				// если это был вызов функции, то он завершается
+				if (withinCall)
+				{
+					withinCall = !withinCall;
+				}
 				typeDefined = false;
 				previousDataType = IT::NONE;
 				LexEntryFill(lex_entry, line, LEX_SEMICOLON, LT_TI_NULLIDX);
@@ -325,10 +336,68 @@ namespace LT
 			}
 			break;
 		}
+		case 'T':
+		{
+			FST::FST fst(TRUE(buffer));
+			if (FST::execute(fst, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::BOOL;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				strcpy_s(id_entry.value.vbool.str, buffer);
+				id_entry.value.vbool.value = 1;
+				strcpy_s(id_entry.id, "[BOOL]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+
+			}
+			break;
+		}
+		case 'F':
+		{
+			FST::FST fst(FALSE(buffer));
+			if (FST::execute(fst, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::BOOL;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				strcpy_s(id_entry.value.vbool.str, buffer);
+				id_entry.value.vbool.value = 0;
+				strcpy_s(id_entry.id, "[BOOL]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+
+			}
+			break;
+		}
 		case '"':
 		{
-			FST::FST fst(LITERAL(buffer));
-			if (FST::execute(fst, line))
+			FST::FST fst1(SIGN_LITERAL(buffer));
+			if (FST::execute(fst1, line))
+			{
+				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
+				strcpy_s(id_entry.function, function[index]);
+				id_entry.index = index;
+				id_entry.iddatatype = IT::SIGN;
+				id_entry.idtype = IT::L;
+				id_entry.idxfirstLE = lex.size - 1;
+				id_entry.value.vsign = buffer[1];
+				strcpy_s(id_entry.id, "[SIGN]");
+				Add(idt, id_entry, line, id);
+				Add(lex, lex_entry);
+				return lex;
+
+			}
+			FST::FST fst2(STR_LITERAL(buffer));
+			if (FST::execute(fst2, line))
 			{
 				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
 				strcpy_s(id_entry.function, function[index]);
@@ -336,7 +405,8 @@ namespace LT
 				id_entry.iddatatype = IT::STR;
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
-				strcpy_s(id_entry.value.vstr.str, buffer);
+				id_entry.value.vstr.len = strlen(buffer) - 2;
+				strcpy_s(id_entry.value.vstr.str, DeleteFirstAndLast(buffer, id_entry.value.vstr.len + 2));
 				strcpy_s(id_entry.id, "[STR]");
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
@@ -350,7 +420,7 @@ namespace LT
 			FST::FST fst(OP(buffer));
 			if (FST::execute(fst, line)) 
 			{
-				LexEntryFill(lex_entry, line, LEX_PLUS, LT_TI_NULLIDX, '+');
+				LexEntryFill(lex_entry, line, LEX_PLUS, LT_TI_NULLIDX, '+', LT::A);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -360,7 +430,7 @@ namespace LT
 			FST::FST fst(OP(buffer));
 			if (FST::execute(fst, line)) 
 			{
-				LexEntryFill(lex_entry, line, LEX_MINUS, LT_TI_NULLIDX, '-');
+				LexEntryFill(lex_entry, line, LEX_MINUS, LT_TI_NULLIDX, '-', LT::A);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -418,7 +488,7 @@ namespace LT
 			FST::FST fst(OP(buffer));
 			if (FST::execute(fst, line)) 
 			{
-				LexEntryFill(lex_entry, line, LEX_STAR, LT_TI_NULLIDX, '*');
+				LexEntryFill(lex_entry, line, LEX_STAR, LT_TI_NULLIDX, '*', LT::A);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -428,7 +498,7 @@ namespace LT
 			FST::FST fst(OP(buffer));
 			if (FST::execute(fst, line)) 
 			{
-				LexEntryFill(lex_entry, line, LEX_DIRSLASH, LT_TI_NULLIDX, '/');
+				LexEntryFill(lex_entry, line, LEX_DIRSLASH, LT_TI_NULLIDX, '/', LT::A);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -446,7 +516,7 @@ namespace LT
 			FST::FST fst1(EQUALS(buffer));
 			if (FST::execute(fst1, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_EQUALS, LT_TI_NULLIDX, '=');
+				LexEntryFill(lex_entry, line, LEX_EQUALS, LT_TI_NULLIDX, '=', LT::L);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -457,7 +527,7 @@ namespace LT
 			FST::FST fst(NEQUALS(buffer));
 			if (FST::execute(fst, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_NEQUALS, LT_TI_NULLIDX, '!');
+				LexEntryFill(lex_entry, line, LEX_NEQUALS, LT_TI_NULLIDX, '!', LT::L);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -468,7 +538,7 @@ namespace LT
 			FST::FST fst(INVERSION(buffer));
 			if (FST::execute(fst, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_INVERSION, LT_TI_NULLIDX, '~');
+				LexEntryFill(lex_entry, line, LEX_INVERSION, LT_TI_NULLIDX, '~', LT::B);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -478,7 +548,7 @@ namespace LT
 			FST::FST fst(CONJUCTION(buffer));
 			if (FST::execute(fst, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_CONJUCTION, LT_TI_NULLIDX, '&');
+				LexEntryFill(lex_entry, line, LEX_CONJUCTION, LT_TI_NULLIDX, '&', LT::B);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -488,7 +558,7 @@ namespace LT
 			FST::FST fst(DISJUNCTION(buffer));
 			if (FST::execute(fst, line))
 			{
-				LexEntryFill(lex_entry, line, LEX_DISJUNCTION, LT_TI_NULLIDX, '\\');
+				LexEntryFill(lex_entry, line, LEX_DISJUNCTION, LT_TI_NULLIDX, '\\', LT::B);
 				Add(lex, lex_entry);
 				return lex;
 			}
@@ -568,12 +638,16 @@ namespace LT
 				{
 					id_entry.value.vpint = 0;
 				}
-				else if (id_entry.iddatatype == IT::STR || id_entry.iddatatype == IT::SIGN) {
-					strcpy_s(id_entry.value.vstr.str, "\"\"");
+				else if (id_entry.iddatatype == IT::STR) {
+					strcpy_s(id_entry.value.vstr.str, "\0");
+				}
+				else if (id_entry.iddatatype == IT::SIGN)
+				{
+					id_entry.value.vsign = '\0';
 				}
 				else if (id_entry.iddatatype == IT::BOOL)
 				{
-					strcpy_s(id_entry.value.vbool.str, "false");
+					strcpy_s(id_entry.value.vbool.str, "False");
 				}
 				strcpy_s(id_entry.function, function[index]);
 				break;
@@ -584,12 +658,12 @@ namespace LT
 			case IT::P:
 				id_entry.idtype = IT::P;
 				if (id_entry.iddatatype == IT::INT) id_entry.value.vint = 0;
-				else if (id_entry.iddatatype == IT::STR) strcpy_s(id_entry.value.vstr.str, "''");
+				else if (id_entry.iddatatype == IT::STR) strcpy_s(id_entry.value.vstr.str, "\0");
 				strcpy_s(id_entry.function, function[index]);
 				break;
 			}
 			previousDataType = IT::NONE;
-			Add(idt, id_entry, line, id);
+			Add(idt, id_entry, line, id, withinCall);
 
 			if (IT::IsId(idt, buffer, function[index]) != 0xffffffff)
 				lex_entry.idxTI = IT::IsId(idt, buffer, function[index]);
@@ -612,7 +686,6 @@ namespace LT
 	void LexTableFill(LexTable& lex, LexTable& lexcopy, In::IN input, IT::IdTable& idt)
 	{
 		char* buffer = new char[LEXEMA_MAXSIZE] {};
-
 		bool readExtraSimbols = false;
 		LT::Entry en;
 		for (int i = 0, bufferIndex = 0, lexCounter = 0, lineCounter = 1; input.text[i - 1] != '\0'; i++)
@@ -725,6 +798,7 @@ namespace LT
 
 	void LexTableOut(LexTable lex)
 	{
+#ifdef LEX_TABLE_OUT
 		std::cout << "\n00" << lex.table[0].sn << ' ';
 		int previousLine = 1;
 		for (int i = 0; i < lex.size; i++)
@@ -745,7 +819,14 @@ namespace LT
 				std::cout << "[" << lex.table[i].idxTI << "]";
 			previousLine = lex.table[i].sn;
 		}
+#endif
 		return;
+	}
+
+	void LexicalAnalysisStatistics(uint start, uint finish)
+	{
+		std::cout << "\nЛексический анализ завершен успешно";
+		std::cout << "\nВремя выполнения: " << finish - start << " мс\n";
 	}
 
 	char* ClearChar(char* buffer)
@@ -755,6 +836,32 @@ namespace LT
 			buffer[i] = '\0';
 		}
 		return buffer;
+	}
+
+	int LengthOfChar(char* buffer)
+	{
+		int i = 0;
+		while (buffer[i] != '\0')
+		{
+			i++;
+		}
+		// кавычки не входят в длину строки
+		return i - 2;
+	}
+
+	char* DeleteFirstAndLast(char* buffer, int size)
+	{
+		char* result = new char[size]{};
+		int i, j;
+		for (i = 0, j = 0; buffer[i + 1] != '\0'; i++)
+		{
+			if(i != 0)
+			{
+				result[j++] = buffer[i];
+			}
+			
+		}
+		return result;
 	}
 
 	int ConvertToDecimal(char* buffer)

@@ -37,6 +37,12 @@
     <Filter Include="Файлы заголовков\3. Semantic Analysis">
       <UniqueIdentifier>{c4066426-bc4d-4f45-abf2-c75af646ea80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\4. Code Generation">
+      <UniqueIdentifier>{ce252fb3-5742-4a75-8e51-99ebc199d151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\4. Code Generation">
+      <UniqueIdentifier>{4f80e729-d0e4-4397-9fd9-999647757148}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VVD.cpp">
@@ -84,6 +90,9 @@
     <ClCompile Include="GRB.h">
       <Filter>Файлы заголовков\2. Syntax Analysis</Filter>
     </ClCompile>
+    <ClCompile Include="Code Generation.cpp">
+      <Filter>Исходные файлы\4. Code Generation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VVD.h">
@@ -121,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="Semantic Analysis.h">
       <Filter>Файлы заголовков\3. Semantic Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="Code Generation.h">
+      <Filter>Файлы заголовков\4. Code Generation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

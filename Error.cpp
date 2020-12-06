@@ -12,7 +12,7 @@ namespace Error {
 		ERROR_ENTRY(5, "[SYS] Недопустимый символ в исходном файле (-in)"), //
 		ERROR_ENTRY(6, "[SYS] Ошибка при создании файла протокола (-log)"), //
 		ERROR_ENTRY(7, "[SYS] Ошибка при открытии файла вывода (-out)"), //
-		ERROR_ENTRY(8, ""),
+		ERROR_ENTRY(8, "[SYS] Ошибка при открытии файла вывода генерируемого кода (-outfile)"),
 		ERROR_ENTRY(9, ""),
 		ERROR_ENTRY_NODEF10(10), ERROR_ENTRY_NODEF10(20), ERROR_ENTRY_NODEF10(30),
 		ERROR_ENTRY_NODEF10(40), ERROR_ENTRY_NODEF10(50), ERROR_ENTRY_NODEF10(60),
@@ -62,10 +62,10 @@ namespace Error {
 		ERROR_ENTRY(310, "[SEM] Превышение допустимых пределов строкового литерала"),
 		ERROR_ENTRY(311, "[SEM] Ошибка типа используемого выражения"), // в if(...) только логические функции
 		ERROR_ENTRY(312, "[SEM] Ошибка использования нескольких типов операций в пределах одного выражения"),
-		ERROR_ENTRY(313, "[SEM]"),
-		ERROR_ENTRY(314, "[SEM]"),
-		ERROR_ENTRY(315, "[SEM]"),
-		ERROR_ENTRY(316, "[SEM]"),
+		ERROR_ENTRY(313, "[SEM] Ошибка использования типов данных/операций в пределах одного выражения"),
+		ERROR_ENTRY(314, "[SEM] Ошибка использования литералов"),
+		ERROR_ENTRY(315, "[SEM] "),
+		ERROR_ENTRY(316, "[SEM] "),
 		ERROR_ENTRY(317, "[SEM]"),
 		ERROR_ENTRY(318, "[SEM]"),
 		ERROR_ENTRY(319, "[SEM]"),

@@ -12,11 +12,11 @@ namespace IT {
 		IdTable idt;
 		idt.maxsize = size;
 		idt.size = 0;
+		//idt.callamount = 0;
 		idt.table = new Entry[size];
+		//idt.calls = new Call[FUNC_MAXAMOUNT];
 		return idt;
 	}
-
-	int idxfle = 0;
 
 	void Add(IdTable& idt, Entry entry, int line, int id)
 	{
@@ -24,12 +24,14 @@ namespace IT {
 
 		for (int i = 0; i < idt.size; i++)
 		{
+			// если имя совпало и идентификатор не является литералом
 			if ((!strcmp(idt.table[i].id, entry.id) && entry.idtype != L && \
-				idt.table[i].index <= entry.index && !strcmp(idt.table[i].function, entry.function)) || \
-				(!strcmp(idt.table[i].id, entry.id) && idt.table[i].idtype == F)
+				// и индекс его вхождения меньше или равен индексу совпавшего с ним идентификатора 
+				// и совпало имя функции, где идентификатор объявлен
+				idt.table[i].index <= entry.index && !strcmp(idt.table[i].function, entry.function)) \
+				// или если совпало имя и тип идентификатора - функция
 				)
 			{
-				idxfle = idt.table[i].idxfirstLE;
 				return;
 			}
 		}
@@ -38,29 +40,34 @@ namespace IT {
 		return;
 	}
 
-	/*void UpdatePrevious(IdTable& idt, Entry entry, bool isNumber)
+	void Add(IdTable& idt, Entry entry, int line, int id, bool& withinCall)
 	{
+		if (idt.size >= idt.maxsize) throw ERROR_THROW(107);
+
 		for (int i = 0; i < idt.size; i++)
 		{
-			if (idt.table[i].idxfirstLE == idxfle)
+			// если имя совпало и идентификатор не является литералом
+			if ((!strcmp(idt.table[i].id, entry.id) && entry.idtype != L && \
+				// и индекс его вхождения меньше или равен индексу совпавшего с ним идентификатора 
+				// и совпало имя функции, где идентификатор объявлен
+				idt.table[i].index <= entry.index && !strcmp(idt.table[i].function, entry.function)) \
+				// или если совпало имя и тип идентификатора - функция
+				)
 			{
-				if (idt.table[i].iddatatype == INT)
-				{
-					if (isNumber == false) throw ERROR_THROW(126);
-					idt.table[i].value.vint = entry.value.vint;
-				}
-
-				else if (idt.table[i].iddatatype == STR)
-				{
-					if (isNumber == true) throw ERROR_THROW(126);
-					strcpy_s(idt.table[i].value.vstr.str, entry.value.vstr.str);
-				}
-
+				// если имя совпало и это фунция
+				return;
+			}
+			else if (!strcmp(idt.table[i].id, entry.id) && idt.table[i].idtype == F)
+			{
+				// добавить функцию в список вызовов (пока без параметров)
 				return;
 			}
 		}
+		//if (entry.iddatatype == NONE) throw ERROR_THROW_IN(121, line, id);
+		idt.table[idt.size++] = entry;
 		return;
-	}*/
+	}
+
 
 	Entry GetEntry(IdTable& idtable, int n)
 	{
@@ -122,6 +129,7 @@ namespace IT {
 
 	void IdTableOut(IdTable idt)
 	{
+#ifdef ID_TABLE_OUT
 		std::cout << "\n\nНомер\tНазвание\tОбласть\t\tИндекс\t\tТип данных\tТип идентификатора\tЗначение\n";
 		for (int i = 0; i < idt.size; i++)
 		{
@@ -170,8 +178,10 @@ namespace IT {
 					std::cout << '\t' << idt.table[i].value.vint << '\n';
 				else if (idt.table[i].iddatatype == PINT)
 					std::cout << '\t' << idt.table[i].value.vpint << '\n';
-				else if (idt.table[i].iddatatype == STR || idt.table[i].iddatatype == SIGN)
-					std::cout << "\t" << idt.table[i].value.vstr.str << "\n";
+				else if (idt.table[i].iddatatype == STR)
+					std::cout << "\t" << "\"" << idt.table[i].value.vstr.str << "\"" << "\n";
+				else if (idt.table[i].iddatatype == SIGN)
+					std::cout << "\t" << "\"" << idt.table[i].value.vsign << "\"" << "\n";
 				else if (idt.table[i].iddatatype == BOOL)
 					std::cout << "\t" << idt.table[i].value.vbool.str << "\n";
 				else
@@ -182,8 +192,14 @@ namespace IT {
 				std::cout << "\tparameter\t";
 				if (idt.table[i].iddatatype == INT)
 					std::cout << '\t' << idt.table[i].value.vint << '\n';
+				else if (idt.table[i].iddatatype == PINT)
+					std::cout << '\t' << idt.table[i].value.vpint << '\n';
 				else if (idt.table[i].iddatatype == STR)
-					std::cout << "\t" << idt.table[i].value.vstr.str << "\n";
+					std::cout << "\t" << "\"" << idt.table[i].value.vstr.str << "\"" << "\n";
+				else if (idt.table[i].iddatatype == SIGN)
+					std::cout << "\t" << "\"" << idt.table[i].value.vsign << "\"" << "\n";
+				else if (idt.table[i].iddatatype == BOOL)
+					std::cout << '\t' << idt.table[i].value.vbool.str << '\n';
 				else
 					std::cout << '\t' << "uninitialized" << '\n';
 				break;
@@ -191,8 +207,14 @@ namespace IT {
 				std::cout << "\tliteral \t";
 				if (idt.table[i].iddatatype == INT)
 					std::cout << '\t' << idt.table[i].value.vint << '\n';
+				else if (idt.table[i].iddatatype == PINT)
+					std::cout << '\t' << idt.table[i].value.vpint << '\n';
 				else if (idt.table[i].iddatatype == STR)
-					std::cout << "\t" << idt.table[i].value.vstr.str << "\n";
+					std::cout << "\t" << "\"" << idt.table[i].value.vstr.str << "\"" << "\n";
+				else if (idt.table[i].iddatatype == SIGN)
+					std::cout << "\t" << "\"" << idt.table[i].value.vsign << "\"" << "\n";
+				else if (idt.table[i].iddatatype == BOOL)
+					std::cout << '\t' << idt.table[i].value.vbool.str << '\n';
 				else
 					std::cout << '\t' << "uninitialized" << '\n';
 				break;
@@ -202,5 +224,7 @@ namespace IT {
 			}
 
 		}
+#endif
+		return;
 	}
 }

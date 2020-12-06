@@ -136,6 +136,7 @@ namespace MFST
 
 	bool Mfst::start()
 	{
+		uint start_time = clock(), end_time;
 		bool rc = false;
 		RC_STEP rc_step = SURPRISE;
 		char buf[MFST_DIAGN_MAXSIZE];
@@ -149,8 +150,12 @@ namespace MFST
 			MFST_TRACE4("------>LENTA_END")
 			std::cout << "-------------------------------------------------------------------------- ----" << std::endl;
 #endif
-			sprintf_s(buf, MFST_DIAGN_MAXSIZE, "%d: всего строк %d, синтаксический анализ выполнен без ошибок", 0, lenta_size);
+			end_time = clock();
+			std::cout << "\nCинтаксический анализ завершен успешно\nВремя выполнения: " << end_time - start_time << " мс\n";
+#ifdef PARSE_TREE
+			sprintf_s(buf, MFST_DIAGN_MAXSIZE, "%d: всего строк %d,", 0, lenta_size);
 			std::cout << std::setw(4) << std::left << 0 << ": всего строк " << lenta_size << ", синтаксический анализ выполнен без ошибок" << std::endl;
+#endif
 			rc = true;
 			break;
 		case NS_NORULE:		 
@@ -220,12 +225,15 @@ namespace MFST
 	{
 		MfstState state;
 		GRB::Rule rule;
+#ifdef PARSE_TREE
 		for (unsigned short k = 0; k < storestate .size(); k++)
 		{
 			state = storestate.c[k];
 			rule = grebach.getRule(state.nrule);
 			MFST_TRACE7
 		}
+#endif
+		return;
 	}
 
 	bool Mfst::savededucation()

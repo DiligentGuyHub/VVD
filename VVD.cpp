@@ -8,6 +8,7 @@
 #include "IdTable.h"
 #include "Lexical Analysis.h"
 #include "MFST.h"
+#include "Semantic Analysis.h"
 
 int main(int argc, char* argv[])
 {
@@ -24,19 +25,28 @@ int main(int argc, char* argv[])
 
 		Out::Output(input, parm.out);
 
+		uint lexical_analysis_start_time = clock();
 		LexTableFill(lex, lexcopy, input, idt);
+		uint lexical_analysis_end_time = clock();
+
+		LT::LexicalAnalysisStatistics(lexical_analysis_start_time, lexical_analysis_end_time);
 		LT::LEX Lex = { lex, idt };
 
 #ifdef DEBUG_MODE
 		MFST_TRACE_START
 #endif
+
+#ifdef SYNTAX_ANALYSIS
 		MFST::Mfst mfst(Lex, GRB::getGreibach());
 		mfst.start();
 
 		mfst.savededucation();
 		mfst.printrules();
+#endif
 
-		system("pause");
+#ifdef SEMANTIC_ANALYSIS
+		Semantic::FindExpressions(Lex);
+#endif
 
 		LexTableOut(lex);
 		IdTableOut(idt);

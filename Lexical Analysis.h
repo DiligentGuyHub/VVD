@@ -3,6 +3,7 @@
 #include "Error.h"
 #include "FST.h"
 #include "Regular Expressions.cpp"
+#include "VVD.h"
 
 namespace LT 
 {
@@ -30,6 +31,20 @@ namespace LT
 
 	char* ClearChar(
 		char* buffer
+	);
+
+	int LengthOfChar(
+		char* buffer
+	);
+
+	char* DeleteFirstAndLast(
+		char* buffer,
+		int size
+	);
+
+	void LexicalAnalysisStatistics(
+		uint start,
+		uint finish
 	);
 
 	int ConvertToDecimal(

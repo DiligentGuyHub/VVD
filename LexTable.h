@@ -51,10 +51,13 @@
 
 namespace LT		// таблица лексем
 {
+	enum OPERATIONTYPE {A = 0, B = 1, L = 2, S = 3, UNDEF = 4}; // арифметический, булевый, логический, строковый, неопределенный
+
 	struct Entry	// строка таблицы лексем
 	{
 		char			lexema;					// лексема
-		char			operation;				// если лексема является операцией
+		char			operation = '\0';		// если лексема является операцией
+		OPERATIONTYPE	operationtype = UNDEF;
 		int				sn;						// номер строки в исходном тексте
 		int				idxTI;					// индекс в таблице идентификаторов (или LT_TI_NULLIDX)
 	};

@@ -1,5 +1,7 @@
 #pragma once
 #define ID_MAXSIZE		10 // to fix
+#define FUNC_MAXAMOUNT	64 // максимальное допустимое число вызовов функций
+#define PARM_MAXAMOUNT	5 // максимальное число параметров функции
 #define IT_MAXSIZE		4096
 #define IT_INT_DEFAULT	0x00000000
 #define IT_STR_DEFAULT	0x00
@@ -9,7 +11,7 @@
 namespace IT
 {
 	enum IDDATATYPE { INT = 1, PINT = 2, SIGN = 3, STR = 4, BOOL = 5, NONE = 0 };
-	enum IDTYPE { V = 1, F = 2, P = 3, L = 4, UNDEF = 0 };	// типы идентификаторов: переменная/функция/параметр/литерал
+	enum IDTYPE { V = 1, F = 2, P = 3, L = 4, C = 5, UNDEF = 0 };	// типы идентификаторов: переменная/функция/параметр/литерал/вызов
 
 	struct Entry	// строка таблицы идентификаторов
 	{
@@ -19,7 +21,8 @@ namespace IT
 		IDTYPE		idtype;			// тип идентификатора
 
 		int			numbersystem;	// система счисления
-		bool		initialized;	// иницилизирован ли?
+		int			parmsamount;	// для вызовов: количество параметров
+		bool		initialized;	// иницилизирован ли? (not used yet)
 
 		int			index;					// глубина вхождения 
 		char		function[ID_MAXSIZE];	// функция, которой принадлежит
@@ -46,7 +49,8 @@ namespace IT
 	{
 		int			maxsize;		// емкость таблицы < TI_MAXSIZE
 		int			size;			// текущий размер таблицы идентификаторов < maxsize
-		Entry* table;			// массив строк таблицы идентификаторов
+		int			callamount;		// текущее количество вызовов функций
+		Entry*		table;			// массив строк таблицы идентификаторов
 	};
 
 	IdTable Create(					// создание таблицы идентификаторов
@@ -58,6 +62,14 @@ namespace IT
 		Entry entry,				// добавляемая строка таблицы идентификаторов
 		int line,
 		int id
+	);
+
+	void Add(						// добавление строки в таблицу идентификаторов
+		IdTable& idtable,			// экземпляр таблицы идентификаторов
+		Entry entry,				// добавляемая строка таблицы идентификаторов
+		int line,
+		int id,
+		bool& withinCall			// флаг вызова функции (для считывания параметров)
 	);
 
 	void UpdatePrevious(
