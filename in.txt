@@ -1,41 +1,9 @@
-function int Check(string mess, int num, int corr)
-{
-def int x = -2.1010 + (-8.15);
-def bool check;
-if(num >= 10)
-{
-print mess;
-}
-elif(num == 10)
-{
-num = num - 1;
-print num + num;
-}
-else
-{
-num = corr*(num + 10);
-}
-return num;
-}
-
 function main
 {
-def bool a = True;
-def sign b = "c";
-
 def int x;
-def pint y;
-def string str1 = "text+2";
-def string str2 = "Текст example?!15";
-def string num = "-12";
-def sign ch = "v";
-y = 10;
-x = y - 50;
-print x&y;
-print x\y;
-print x~;
-def string str = str1 + " " + str2;
+def int y = 5;
+x = 10;
+y = 2 + 2 * 2;
 print y;
-print num;
-return 0;
+return x;
 }

@@ -4,11 +4,10 @@
 #include "Input.h"
 #include "FST.h"
 #include "Output.h"
-#include "LexTable.h"
-#include "IdTable.h"
-#include "Lexical Analysis.h"
 #include "MFST.h"
 #include "Semantic Analysis.h"
+#include "Code Generation.h"
+#include "PolishNotation.h"
 
 int main(int argc, char* argv[])
 {
@@ -50,6 +49,10 @@ int main(int argc, char* argv[])
 
 		LexTableOut(lex);
 		IdTableOut(idt);
+
+		char masm[] = "masm.asm";
+		Generation::CodeGeneration(Lex.lextable, Lex.idtable, masm);
+		
 
 		WriteLog(log);
 		WriteParm(log, parm);

@@ -4,17 +4,27 @@ namespace Error {
 
 	ERROR errors[ERROR_MAX_ENTRY] =
 	{
-		ERROR_ENTRY(0, "[SYS] Недопустимый код ошибки"),
-		ERROR_ENTRY(1, "[SYS] Системный сбой"),
-		ERROR_ENTRY(2, "[SYS] Параметр -in должен быть задан"), //
-		ERROR_ENTRY(3, "[SYS] Превышена длина входного параметра"), //
-		ERROR_ENTRY(4, "[SYS] Ошибка при открытии файла с исходным кодом (-in)"), //
-		ERROR_ENTRY(5, "[SYS] Недопустимый символ в исходном файле (-in)"), //
-		ERROR_ENTRY(6, "[SYS] Ошибка при создании файла протокола (-log)"), //
-		ERROR_ENTRY(7, "[SYS] Ошибка при открытии файла вывода (-out)"), //
-		ERROR_ENTRY(8, "[SYS] Ошибка при открытии файла вывода генерируемого кода (-outfile)"),
-		ERROR_ENTRY(9, ""),
-		ERROR_ENTRY_NODEF10(10), ERROR_ENTRY_NODEF10(20), ERROR_ENTRY_NODEF10(30),
+		ERROR_ENTRY(0,	"[SYS] Недопустимый код ошибки"),
+		ERROR_ENTRY(1,	"[SYS] Системный сбой"),
+		ERROR_ENTRY(2,	"[SYS] Параметр -in должен быть задан"), //
+		ERROR_ENTRY(3,	"[SYS] Превышена длина входного параметра"), //
+		ERROR_ENTRY(4,	"[SYS] Ошибка при открытии файла с исходным кодом (-in)"), //
+		ERROR_ENTRY(5,	"[SYS] Недопустимый символ в исходном файле (-in)"), //
+		ERROR_ENTRY(6,	"[SYS] Ошибка при создании файла протокола (-log)"), //
+		ERROR_ENTRY(7,	"[SYS] Ошибка при открытии файла вывода (-out)"), //
+		ERROR_ENTRY(8,	"[SYS] Ошибка при открытии файла вывода генерируемого кода (-outfile)"),
+		ERROR_ENTRY(9,	"[GEN] Ошибка неопределенного типа идентификатора"),
+		ERROR_ENTRY(10, "[GEN] Ошибка преобразования выражения в обратную польскую запись"),
+		ERROR_ENTRY(11, "[GEN] "),
+		ERROR_ENTRY(12, "[GEN] "),
+		ERROR_ENTRY(13, "[GEN] "),
+		ERROR_ENTRY(14, "[GEN] "),
+		ERROR_ENTRY(15, "[GEN] "),
+		ERROR_ENTRY(16, "[GEN] "),
+		ERROR_ENTRY(17, "[GEN] "),
+		ERROR_ENTRY(18, "[GEN] "),
+		ERROR_ENTRY(19, "[GEN] "), 
+		ERROR_ENTRY_NODEF10(20), ERROR_ENTRY_NODEF10(30),
 		ERROR_ENTRY_NODEF10(40), ERROR_ENTRY_NODEF10(50), ERROR_ENTRY_NODEF10(60),
 		ERROR_ENTRY_NODEF10(70), ERROR_ENTRY_NODEF10(80), ERROR_ENTRY_NODEF10(90),
 
@@ -81,7 +91,8 @@ namespace Error {
 		ERROR_ENTRY_NODEF100(800)
 	};
 
-	ERROR GetError(int id) {
+	ERROR GetError(int id) 
+	{
 		ERROR trouble;
 		if (id < 0 || id > ERROR_MAX_ENTRY)
 			trouble = errors[0];
@@ -90,7 +101,8 @@ namespace Error {
 		return trouble;
 	}
 
-	ERROR GetErrorIn(int id, int line = -1, int col = -1) {
+	ERROR GetErrorIn(int id, int line = -1, int col = -1) 
+	{
 		ERROR trouble;
 		if (id < 0 || id > ERROR_MAX_ENTRY)
 			trouble = errors[0];

@@ -33,6 +33,8 @@
 #define LEX_RIGHTHESIS	')' // )
 #define LEX_EQUAL		':' // =
 
+#define LEX_OPERATION	'v'
+
 #define LEX_MORE		'v' // >
 #define LEX_LESS		'v' // <
 #define	LEX_EQMORE		'v' // >=

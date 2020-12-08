@@ -47,6 +47,10 @@ namespace LT
 		uint finish
 	);
 
+	char* IntegerToString(
+		int num
+	);
+
 	int ConvertToDecimal(
 		char* buffer
 	);

@@ -6,14 +6,17 @@ using namespace std;
 namespace Out {
 	char simbols[11] = { '+', '-', '/',  '*',  '=',  '(',  ')',  '{',  '}',  ';',  ',' };
 
-	char* DeleteSimbol(char* text, int position) {
-		for (int i = position; char(text[i]) != '\0'; i++) {
+	char* DeleteSimbol(char* text, int position) 
+	{
+		for (int i = position; char(text[i]) != '\0'; i++) 
+		{
 			text[i] = text[i + 1];
 		}
 		return text;
 	}
 
-	void Output(IN input, char outfile[]) {
+	void Output(IN input, char outfile[])
+	{
 		ofstream file(outfile);
 
 		if (!file.is_open())
@@ -33,17 +36,22 @@ namespace Out {
 			}
 		}*/
 
-		for (int x = 0, i; x < 11; x++) {
-			for (i = 0; char(input.text[i]) != '\0'; i++) {
+		for (int x = 0, i; x < 11; x++) 
+		{
+			for (i = 0; char(input.text[i]) != '\0'; i++)
+			{
 				if (input.text[i] == simbols[x]) {
-					if (input.text[i + 1] == ' ' && input.text[i - 1] == ' ') {
+					if (input.text[i + 1] == ' ' && input.text[i - 1] == ' ') 
+					{
 						input.text = DeleteSimbol(input.text, i - 1);
 						input.text = DeleteSimbol(input.text, i);
 					}
-					else if (input.text[i + 1] == ' ') {
+					else if (input.text[i + 1] == ' ') 
+					{
 						input.text = DeleteSimbol(input.text, i + 1);
 					}
-					else if (input.text[i - 1] == ' ') {
+					else if (input.text[i - 1] == ' ')
+					{
 						input.text = DeleteSimbol(input.text, i - 1);
 					}
 

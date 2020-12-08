@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Lexical Analysis.h"
 #include <math.h>
 
@@ -13,6 +14,13 @@ namespace LT
 
 	bool mainDefined = false;
 	bool typeDefined = false;
+
+	int boolliteral = 0;
+	int intliteral = 0;
+	int pintliteral = 0;
+	int strliteral = 0;
+	int signliteral = 0;
+
 	char function[10][10];
 	int index = -1;
 
@@ -37,10 +45,8 @@ namespace LT
 
 	LexTable& CreateEntry(LexTable& lex, IT::IdTable& idt, char* buffer, int line, int id)
 	{
-		if (line > 1 && !strcmp(buffer, "Check"))
-		{
-			line += 0;
-		}
+		
+
 		LT::Entry lex_entry;
 		IT::Entry id_entry;
 		switch (buffer[0])
@@ -349,7 +355,8 @@ namespace LT
 				id_entry.idxfirstLE = lex.size - 1;
 				strcpy_s(id_entry.value.vbool.str, buffer);
 				id_entry.value.vbool.value = 1;
-				strcpy_s(id_entry.id, "[BOOL]");
+				strcpy_s(id_entry.id, "BOOL");
+				strcat(id_entry.id, IntegerToString(++boolliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -370,7 +377,8 @@ namespace LT
 				id_entry.idxfirstLE = lex.size - 1;
 				strcpy_s(id_entry.value.vbool.str, buffer);
 				id_entry.value.vbool.value = 0;
-				strcpy_s(id_entry.id, "[BOOL]");
+				strcpy_s(id_entry.id, "BOOL");
+				strcat(id_entry.id, IntegerToString(++boolliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -390,7 +398,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vsign = buffer[1];
-				strcpy_s(id_entry.id, "[SIGN]");
+				strcpy_s(id_entry.id, "SIGN");
+				strcat(id_entry.id, IntegerToString(++signliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -407,7 +416,8 @@ namespace LT
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vstr.len = strlen(buffer) - 2;
 				strcpy_s(id_entry.value.vstr.str, DeleteFirstAndLast(buffer, id_entry.value.vstr.len + 2));
-				strcpy_s(id_entry.id, "[STR]");
+				strcpy_s(id_entry.id, "STR");
+				strcat(id_entry.id, IntegerToString(++strliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -445,7 +455,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = atoi(buffer);
-				strcpy_s(id_entry.id, "[INT]");
+				strcpy_s(id_entry.id, "INT");
+				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -461,7 +472,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
-				strcpy_s(id_entry.id, "[INT2]");
+				strcpy_s(id_entry.id, "INT");
+				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -477,7 +489,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
-				strcpy_s(id_entry.id, "[INT8]");
+				strcpy_s(id_entry.id, "INT");
+				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -575,7 +588,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = atoi(buffer);
-				strcpy_s(id_entry.id, "[INT]");
+				strcpy_s(id_entry.id, "INT");
+				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -591,7 +605,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
-				strcpy_s(id_entry.id, "[INT2]");
+				strcpy_s(id_entry.id, "INT");
+				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -606,7 +621,8 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
-				strcpy_s(id_entry.id, "[INT8]");
+				strcpy_s(id_entry.id, "INT");
+				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(idt, id_entry, line, id);
 				Add(lex, lex_entry);
 				return lex;
@@ -795,7 +811,7 @@ namespace LT
 		lexcopy = lex;
 		return;
 	}
-
+	
 	void LexTableOut(LexTable lex)
 	{
 #ifdef LEX_TABLE_OUT
@@ -809,9 +825,9 @@ namespace LT
 				std::cout << std::setw(3) << std::right << std::setfill('0');
 				std::cout << lex.table[i].sn << ' ';
 			}
-			/*if (lex.table[i].lexema == 'v' || lex.table[i].lexema == 'c' || lex.table[i].lexema == 'b')
+			if (lex.table[i].lexema == 'v')
 				std::cout << lex.table[i].operation;
-			else*/
+			else
 				std::cout << lex.table[i].lexema;
 			/*if (lex.table[i].idxTI >= 0 && lex.table[i].idxTI < 100)
 				cout << "[" << lex.table[i].idxTI << "]";*/
@@ -861,6 +877,13 @@ namespace LT
 			}
 			
 		}
+		return result;
+	}
+
+	char* IntegerToString(int num)
+	{
+		char result[255] = "";
+		_itoa_s(num, result, 10);
 		return result;
 	}
 

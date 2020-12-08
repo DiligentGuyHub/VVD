@@ -1,6 +1,7 @@
 #include "Semantic Analysis.h"
 #include "IdTable.h"
 #include "Error.h"
+#include "PolishNotation.h"
 
 namespace Semantic
 {
@@ -73,6 +74,8 @@ namespace Semantic
 		{
 			std::cout << end_time - start_time << " мс\n";
 		}
+		//PolishNotation::Checkout(lex.lextable, lex.idtable);
+		return;
 	}
 
 	// Проверка выражений с целочисленными переменными (не логические)
@@ -223,6 +226,7 @@ namespace Semantic
 	{
 		LT::OPERATIONTYPE type = LT::UNDEF;
 		IT::IDDATATYPE previous = IT::NONE;
+		int printposition = pos - 1;
 
 		for (int i = pos; ; i++)
 		{

@@ -3,7 +3,8 @@
 
 namespace FST {
 
-	RELATION::RELATION(char c, short nn) {
+	RELATION::RELATION(char c, short nn) 
+	{
 		symbol = c;
 		nnode = nn;
 	};
@@ -13,7 +14,8 @@ namespace FST {
 		RELATION* relations = NULL;
 	};
 
-	NODE::NODE(short n, RELATION rel, ...) {
+	NODE::NODE(short n, RELATION rel, ...) 
+	{
 		n_relation = n;
 		RELATION* p = &rel;
 		relations = new RELATION[n];
@@ -21,7 +23,8 @@ namespace FST {
 			relations[i] = p[i];
 	};
 
-	FST::FST(const char* s, short ns, NODE n, ...) {
+	FST::FST(const char* s, short ns, NODE n, ...) 
+	{
 		string = s;
 		nstates = ns;
 		nodes = new NODE[ns];
@@ -33,7 +36,8 @@ namespace FST {
 		position = -1;
 	}
 
-	bool step(FST& fst, short* rstates) {
+	bool step(FST& fst, short* rstates) 
+	{
 		bool rc = false;
 		std::swap(rstates, fst.rstates);
 		for (short i = 0; i < fst.nstates; i++)
@@ -51,7 +55,8 @@ namespace FST {
 		return rc;
 	};
 
-	bool execute(FST& fst, int line) {
+	bool execute(FST& fst, int line) 
+	{
 		short* rstates = new short[fst.nstates];
 		memset(rstates, 0xff, sizeof(short) * fst.nstates);
 		short lstring = strlen(fst.string);
