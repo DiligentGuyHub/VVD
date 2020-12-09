@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
+#include <Windows.h>
 
 extern "C"
 {
@@ -66,28 +67,33 @@ extern "C"
 		return int(ch);
 	}
 
+	char* Concat(char* source, char* destination)
+	{
+		char result[255] = "";
+		for (int i = 0; i < strlen(destination); i++)
+		{
+			result[i] = destination[i];
+		}
+		for (int i = strlen(destination), j = 0; i < strlen(destination) + strlen(source); i++)
+		{
+			result[i] = source[j++];
+		}
+		result[strlen(destination) + strlen(source)] = '\n';
+		return result;
+	}
+
 	void print_int(int value)
 	{
-		std::cout << value << "\n";
+		std::cout << value;
 	}
 
 	void print_pint(unsigned int value)
 	{
-		std::cout << value << "\n";
+		std::cout << value;
 	}
 
 	void print_bool(bool value)
 	{
-		std::cout << value << "\n";
+		std::cout << value;
 	}
-
-	void print_str(char* value)
-	{
-		std::cout << value << "\n";
-	}
-	void print_sign(char value)
-	{
-		std::cout << value << "\n";
-	}
-
 }

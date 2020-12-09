@@ -140,12 +140,24 @@ namespace Semantic
 	// допустимые операции: логические
 	void CheckoutBooleanExpression(LT::LexTable& lex, IT::IdTable& idt, int begin, int line, int& pos)
 	{
+		int operationcounter = 0;
 		for (int i = pos; ; i++)
 		{
 			// если операция определена, но не представляет логический тип, то ошибка
 			if (lex.table[i].operation != NULL && lex.table[i].operationtype != LT::L)
 			{
 				throw ERROR_THROW_IN(311, line, i - begin); // Ошибка типа используемого выражения
+			}
+			else if (lex.table[i].operationtype == LT::L)
+			{
+				if (operationcounter > 0)
+				{
+					throw ERROR_THROW_IN(315, line, i - begin);
+				}
+				else
+				{
+					operationcounter++;
+				}
 			}
 			// если же лексема является идентификатором/литералом, но не пренадлежит ни к одному из целочиленных типов, то ошибка
 			else if (lex.table[i].idxTI != LT_TI_NULLIDX && \

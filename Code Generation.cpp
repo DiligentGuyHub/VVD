@@ -4,6 +4,9 @@
 
 namespace Generation
 {
+	int truecounter = 0;
+	int continuecounter = 0;
+
 	void CodeGeneration(LT::LexTable& lex, IT::IdTable& idt, char* filename)
 	{
 		std::ofstream* file = new std::ofstream();
@@ -82,10 +85,10 @@ namespace Generation
 						*file << MASM_VARIABLE_BOOL(idt.table[i].id) << idt.table[i].value.vbool.value << "\n";
 						break;
 					case IT::STR:
-						*file << MASM_VARIABLE_STR(idt.table[i].id) << idt.table[i].value.vstr.str << ", 0\n";
+						*file << MASM_VARIABLE_STR(idt.table[i].id) << "?\n";
 						break;
 					case IT::SIGN:
-						*file << MASM_VARIABLE_SIGN(idt.table[i].id) << idt.table[i].value.vsign << ", 0\n";
+						*file << MASM_VARIABLE_SIGN(idt.table[i].id) <<"\"" << idt.table[i].value.vsign << "\", 0\n";
 						break;
 					default:
 						throw ERROR_THROW(9);
@@ -174,13 +177,13 @@ namespace Generation
 			*file << MASM_PUSH_ << "PINT" << pintliteral++ << "\n";
 			break;
 		case IT::BOOL:
-			*file << "\tmov\tal, BOOL" << boolliteral++ << "\n";
+			*file << "\tmov\tbl, BOOL" << boolliteral++ << "\n\tpush ebx\n";
 			break;
 		case IT::STR:
 			*file << MASM_PUSH_OFFSET_ << "STR" << strliteral++ << "\n";
 			break;
 		case IT::SIGN:
-			*file << "\tmov\tal, SIGN" << signliteral++ << "\n";
+			*file << MASM_PUSH_OFFSET_ << "SIGN" << signliteral++ << "\n";
 			break;
 		default:
 			break;
@@ -190,7 +193,19 @@ namespace Generation
 
 	void ValuePush(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
 	{
-		*file << MASM_PUSH(idt.table[lex.table[position].idxTI].id);
+		if (idt.table[lex.table[position].idxTI].iddatatype == IT::INT || idt.table[lex.table[position].idxTI].iddatatype == IT::PINT)
+		{
+			*file << MASM_PUSH(idt.table[lex.table[position].idxTI].id);
+		}
+		else if (idt.table[lex.table[position].idxTI].iddatatype == IT::BOOL)
+		{
+			*file << "\tmov bl, " << MASM_VARIABLE(position) << "\n";
+			*file << "\tpush ebx\n";
+		}
+		else if (idt.table[lex.table[position].idxTI].iddatatype == IT::STR)
+		{
+
+		}
 		return;
 	}
 
@@ -201,93 +216,151 @@ namespace Generation
 			int sourceposition = 0;
 			switch (lex.table[position].lexema)
 			{
+			// для присваивания значений выражений
 			case LEX_EQUAL:
-				sourceposition = position - 1; // позиция идентификатора, которому присваивается значение
-				PolishNotation::PolishNotation(++position, lex, idt);
-				LT::LexTableOut(lex);
-				for (position; lex.table[position].lexema != LEX_SEMICOLON; position++)
-				{
-					switch (lex.table[position].lexema)
-					{
-					case LEX_ID:
-						ValuePush(lex, idt, file, position);
-						break;
-					case LEX_LITERAL:
-						ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-						break;
-					case LEX_OPERATION:
-						switch (lex.table[position].operation)
-						{
-						case '+':
-							*file << MASM_ADD;
-							break;
-						case '-':
-							*file << MASM_SUB;
-							break;
-						case '*':
-							*file << MASM_MUL;
-							break;
-						case '/':
-							*file << MASM_SUB;
-							break;
-						case '&':
-							*file << MASM_AND;
-							break;
-						case '\\':
-							*file << MASM_OR;
-							break;
-						case '>':
-
-							break;
-						case '<':
-
-							break;
-						case '1':
-
-							break;
-						case '2':
-
-							break;
-						case '=':
-
-							break;
-						case '!':
-
-							break;
-						}
-					default:
-						break;
-					}
-				}
-				*file << MASM_MOV;
+				ExpressionGeneration(lex, idt, file, position, sourceposition, boolliteral, intliteral, pintliteral, strliteral, signliteral);
 				break;
 			case LEX_IF:
+
 				break;
 			case LEX_PRINT:
-				// выражение
-				if (++position == LEX_LEFTHESIS)
+				if (lex.table[position + 1].lexema == LEX_LEFTHESIS)
 				{
-
+					PolishNotation::PolishNotation(++position, lex, idt);
+					LT::LexTableOut(lex);
+					IT::IDDATATYPE prev = IT::NONE;
+					for (position; lex.table[position].lexema != LEX_SEMICOLON; position++)
+					{
+						// преверяем каждую лексему
+						switch (lex.table[position].lexema)
+						{
+						// идентификатор помещает в стек для дальнейших действий
+						case LEX_ID:
+							prev = idt.table[lex.table[position].idxTI].iddatatype;
+							ValuePush(lex, idt, file, position);
+							break;
+						// литерал помещаем в стек для дальнейших действий
+						case LEX_LITERAL:
+							prev = idt.table[lex.table[position].idxTI].iddatatype;
+							ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
+							break;
+						case LEX_OPERATION:
+							switch (lex.table[position].operation)
+							{
+							case '+':
+								// для целочисленных операндов
+								if (prev == IT::INT || prev == IT::PINT)
+								{
+									*file << MASM_ADD;
+								}
+								// для строковых и символьных операндов
+								else
+								{
+									*file << MASM_CONCAT;
+								}
+								break;
+							case '-':
+								*file << MASM_SUB;
+								break;
+							case '*':
+								*file << MASM_MUL;
+								break;
+							case '/':
+								*file << MASM_SUB;
+								break;
+							case '&':
+								*file << MASM_AND;
+								break;
+							case '\\':
+								*file << MASM_OR;
+								break;
+							case '>':
+								*file << MASM_JA(sourceposition);
+								break;
+							case '<':
+								*file << MASM_JB(sourceposition);
+								break;
+							case '1':
+								*file << MASM_JAE(sourceposition);
+								break;
+							case '2':
+								*file << MASM_JBE(sourceposition);
+								break;
+							case '=':
+								*file << MASM_JE(sourceposition);
+								break;
+							case '!':
+								*file << MASM_JNE(sourceposition);
+								break;
+							}
+						default:
+							break;
+						}
+					}
+					switch (prev)
+					{
+					case IT::INT:
+						*file << MASM_PRINT_INT;
+						break;
+					case IT::PINT:
+						*file << MASM_PRINT_PINT;
+						break;
+					case IT::BOOL:
+						*file << "\n\tmov bl, " << MASM_VARIABLE(position) << "\n\tpush ebx\n";
+						*file << MASM_PRINT_BOOL;
+						break;
+					case IT::STR:
+						*file << "\tpush eax\n\tinvoke WriteConsoleA, consoleHandle, eax, sizeof eax, 0, 0\n";
+						break;
+					case IT::SIGN:
+						*file << "\tpush eax\n\tinvoke WriteConsoleA, consoleHandle, eax, sizeof eax, 1, 0\n";
+						break;
+					}
 				}
 				// одиночное значение
 				else
 				{
-					if (lex.table[position].lexema == LEX_LITERAL)
+					if (lex.table[++position].lexema == LEX_LITERAL)
 					{
-
+						switch (idt.table[lex.table[position].idxTI].iddatatype)
+						{
+						case IT::INT:
+							ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
+							*file << MASM_PRINT_INT;
+							break;
+						case IT::PINT:
+							ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
+							*file << MASM_PRINT_PINT;
+							break;
+						case IT::BOOL:
+							*file << "\n\tmov bl, " << MASM_LITERAL("BOOL", boolliteral) << "\n\tpush ebx\n";
+							*file << MASM_PRINT_BOOL;
+							break;
+						case IT::STR:
+							*file << "\n\tmov eax, offset " << MASM_LITERAL("STR", strliteral) << "\n";
+							*file << MASM_PRINT_STR(MASM_LITERAL("STR", strliteral));
+							break;
+						case IT::SIGN:
+							*file << "\n\tmov eax, offset " << MASM_LITERAL("SIGN", signliteral) << "\n";
+							*file << MASM_PRINT_SIGN(MASM_LITERAL("SIGN", signliteral));
+							break;
+						}
 					}
 					else if (lex.table[position].lexema == LEX_ID)
 					{
 						switch (idt.table[lex.table[position].idxTI].iddatatype)
 						{
 						case IT::INT:
+							ValuePush(lex, idt, file, position);
 							*file << MASM_PRINT_INT;
 							break;
 						case IT::PINT:
-							*file;
+							ValuePush(lex, idt, file, position);
+							*file << MASM_PRINT_PINT;
 							break;
 						case IT::BOOL:
-							*file;
+							*file << "\n\tmov bl, " << MASM_VARIABLE(position) << "\n\tpush ebx\n";
+							*file << MASM_PRINT_BOOL;
 							break;
 						case IT::STR:
 							*file;
@@ -308,13 +381,83 @@ namespace Generation
 		}
 	}
 
-	void ExpressionGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file)
+	void ExpressionGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position, int& sourceposition, int& boolliteral, int& intliteral, int& pintliteral, int& strliteral, int& signliteral)
 	{
-
-		for (int i = 0; lex.table[i].lexema != LEX_SEMICOLON; i++)
+		sourceposition = position - 1;
+		PolishNotation::PolishNotation(++position, lex, idt);
+		LT::LexTableOut(lex);
+		for (position; lex.table[position].lexema != LEX_SEMICOLON; position++)
 		{
-			
+			switch (lex.table[position].lexema)
+			{
+				// идентификатор помещается в стек для дальнейших действий
+			case LEX_ID:
+				ValuePush(lex, idt, file, position);
+				break;
+				// литерал помещается в стек для дальнейших действий
+			case LEX_LITERAL:
+				ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
+				break;
+			case LEX_OPERATION:
+				switch (lex.table[position].operation)
+				{
+				case '+':
+					// сумма целочисленных значений
+					if (idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::INT || idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::PINT)
+					{
+						*file << MASM_ADD;
+					}
+					// конкатенация строковых и символьных значений
+					else
+					{
+						*file << MASM_CONCAT;
+					}
+					break;
+				case '-':
+					*file << MASM_SUB;
+					break;
+				case '*':
+					*file << MASM_MUL;
+					break;
+				case '/':
+					*file << MASM_SUB;
+					break;
+				case '&':
+					*file << MASM_AND;
+					break;
+				case '\\':
+					*file << MASM_OR;
+					break;
+				case '>':
+					*file << MASM_JA(sourceposition);
+					break;
+				case '<':
+					*file << MASM_JB(sourceposition);
+					break;
+				case '1':
+					*file << MASM_JAE(sourceposition);
+					break;
+				case '2':
+					*file << MASM_JBE(sourceposition);
+					break;
+				case '=':
+					*file << MASM_JE(sourceposition);
+					break;
+				case '!':
+					*file << MASM_JNE(sourceposition);
+					break;
+				}
+			default:
+				break;
+			}
 		}
-
+		if (idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::INT || idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::PINT)
+		{
+			*file << MASM_MOV;
+		}
+		else if (idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::BOOL && lex.table[sourceposition + 3].lexema == LEX_SEMICOLON)
+		{
+			*file << "\tmov " << MASM_VARIABLE(sourceposition) << ", bl\n";
+		}
 	}
 }

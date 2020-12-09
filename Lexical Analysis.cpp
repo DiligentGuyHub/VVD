@@ -664,6 +664,7 @@ namespace LT
 				else if (id_entry.iddatatype == IT::BOOL)
 				{
 					strcpy_s(id_entry.value.vbool.str, "False");
+					id_entry.value.vbool.value = 0;
 				}
 				strcpy_s(id_entry.function, function[index]);
 				break;
