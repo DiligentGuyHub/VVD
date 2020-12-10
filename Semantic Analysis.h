@@ -6,7 +6,8 @@
 namespace Semantic
 {
 	void FindExpressions(
-		LT::LEX& lex
+		LT::LexTable& lex,
+		IT::IdTable& idt
 	);
 
 	void CheckoutIntegerExpression(

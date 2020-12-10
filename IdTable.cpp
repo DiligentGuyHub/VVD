@@ -18,7 +18,7 @@ namespace IT {
 		return idt;
 	}
 
-	void Add(IdTable& idt, Entry entry, int line, int id)
+	void Add(LT::LexTable& lex, IdTable& idt, Entry entry, int line, int id)
 	{
 		if (idt.size >= idt.maxsize) throw ERROR_THROW(107);
 
@@ -32,6 +32,7 @@ namespace IT {
 				// или если совпало имя и тип идентификатора - функция
 				)
 			{
+				lex.table[idt.table[i].idxfirstLE].idxTI = i;
 				return;
 			}
 		}
@@ -40,7 +41,7 @@ namespace IT {
 		return;
 	}
 
-	void Add(IdTable& idt, Entry entry, int line, int id, bool& withinCall)
+	void Add(LT::LexTable& lex, IdTable& idt, Entry entry, int line, int id, bool& withinCall)
 	{
 		if (idt.size >= idt.maxsize) throw ERROR_THROW(107);
 
@@ -55,6 +56,7 @@ namespace IT {
 				)
 			{
 				// если имя совпало и это фунция
+				lex.table[idt.table[i].idxfirstLE].idxTI = i;
 				return;
 			}
 			else if (!strcmp(idt.table[i].id, entry.id) && idt.table[i].idtype == F)
@@ -109,23 +111,23 @@ namespace IT {
 		return;
 	}
 
-	IdTable& CreateEntry(IdTable& idt, char* buffer, int ival, char* sval, char lex, IDTYPE type, IDDATATYPE dtype, int line, int id)
-	{
-		IT::Entry en; // создаем запись таблицы id
-		en.idtype = type; // записываем туда тип идентификатора
-		en.iddatatype = dtype; // уточняем тип данных идентификатора
-		en.idxfirstLE = line; // уточняем строку инициализации
-		for (int i = 0; i < ID_MAXSIZE; i++)
-		{
-			// посимвольно записываем имя идентификатора с усечением
-			en.id[i] = buffer[i];
-		}
-		// определяем значение идентификатора в зависимости от типа данных
-		if (dtype == INT) en.value.vint = ival;
-		else strcpy_s(en.value.vstr.str, sval);
-		Add(idt, en, line, id);
-		return idt;
-	}
+	//IdTable& CreateEntry(IdTable& idt, char* buffer, int ival, char* sval, char lex, IDTYPE type, IDDATATYPE dtype, int line, int id)
+	//{
+	//	IT::Entry en; // создаем запись таблицы id
+	//	en.idtype = type; // записываем туда тип идентификатора
+	//	en.iddatatype = dtype; // уточняем тип данных идентификатора
+	//	en.idxfirstLE = line; // уточняем строку инициализации
+	//	for (int i = 0; i < ID_MAXSIZE; i++)
+	//	{
+	//		// посимвольно записываем имя идентификатора с усечением
+	//		en.id[i] = buffer[i];
+	//	}
+	//	// определяем значение идентификатора в зависимости от типа данных
+	//	if (dtype == INT) en.value.vint = ival;
+	//	else strcpy_s(en.value.vstr.str, sval);
+	//	Add(idt, en, line, id);
+	//	return idt;
+	//}
 
 	void IdTableOut(IdTable idt)
 	{

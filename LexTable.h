@@ -1,6 +1,5 @@
 #pragma once
 #include "Input.h"
-#include "IdTable.h"
 #define LEXEMA_FIXSIZE	1
 #define LEXEMA_MAXSIZE	50
 #define LT_MAXSIZE		4096
@@ -70,12 +69,6 @@ namespace LT		// таблица лексем
 		int		size;					// текущий размер таблица лексем < maxsize
 		int		expressionsAmount;
 		Entry* table;					// массив строк таблицы лексем
-	};
-	
-	struct LEX
-	{
-		LT::LexTable lextable;
-		IT::IdTable idtable;
 	};
 
 	LexTable Create(					// создание таблица лексем

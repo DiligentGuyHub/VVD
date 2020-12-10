@@ -30,6 +30,10 @@ extern "C"
 	char* IntStr(int num)
 	{
 		char result[255] = "";
+		if (num < 0)
+		{
+			result[0] = '-';
+		}
 		int counter = 0;
 		int buffer = num;
 		while (buffer != 0)
@@ -37,10 +41,10 @@ extern "C"
 			buffer /= 10;
 			counter++;
 		}
-		for (int i = 0; counter != 0; i++)
+		for (int i = 0 + (num < 0); counter != 0; i++)
 		{
 			result[i] = char(num / pow(10, --counter) + 48);
-			num /= pow(10, counter + 1);
+			num -= int(result[i] - 48) * pow(10, counter);
 		}
 		return result;
 	}
@@ -67,7 +71,7 @@ extern "C"
 		return int(ch);
 	}
 
-	char* Concat(char* source, char* destination)
+	char* Concat(char destination[], char source[])
 	{
 		char result[255] = "";
 		for (int i = 0; i < strlen(destination); i++)
@@ -84,16 +88,30 @@ extern "C"
 
 	void print_int(int value)
 	{
-		std::cout << value;
+		std::cout << value << std::endl;
 	}
 
 	void print_pint(unsigned int value)
 	{
-		std::cout << value;
+		std::cout << value << std::endl;
+	}
+
+	void print_str(char* value)
+	{
+		SetConsoleCP(1251);
+		SetConsoleOutputCP(1251);
+		std::cout << value << std::endl;
+	}
+
+	void print_sign(char value)
+	{
+		SetConsoleCP(1251);
+		SetConsoleOutputCP(1251);
+		std::cout << value << std::endl;
 	}
 
 	void print_bool(bool value)
 	{
-		std::cout << value;
+		std::cout << value << std::endl;
 	}
 }

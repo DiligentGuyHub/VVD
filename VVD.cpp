@@ -29,14 +29,13 @@ int main(int argc, char* argv[])
 		uint lexical_analysis_end_time = clock();
 
 		LT::LexicalAnalysisStatistics(lexical_analysis_start_time, lexical_analysis_end_time);
-		LT::LEX Lex = { lex, idt };
 
 #ifdef DEBUG_MODE
 		MFST_TRACE_START
 #endif
 
 #ifdef SYNTAX_ANALYSIS
-		MFST::Mfst mfst(Lex, GRB::getGreibach());
+		MFST::Mfst mfst(lex, GRB::getGreibach());
 		mfst.start();
 
 		mfst.savededucation();
@@ -44,15 +43,13 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef SEMANTIC_ANALYSIS
-		Semantic::FindExpressions(Lex);
+		//Semantic::FindExpressions(lex, idt);
 #endif
-
 		LexTableOut(lex);
 		IdTableOut(idt);
-
-		char masm[] = "masm.asm";
-		Generation::CodeGeneration(Lex.lextable, Lex.idtable, masm);
 		
+		char python[] = "VVD_python/VVD_python.py";
+		Python::General(lex, idt, python);
 
 		WriteLog(log);
 		WriteParm(log, parm);

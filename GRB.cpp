@@ -21,7 +21,7 @@ namespace GRB
 		),
 		Rule(
 			NS('N'), GRB_ERROR_SERIES + 1,
-			15,
+			21,
 			Rule::Chain(5, TS('d'), TS('t'), TS('i'), TS(';'), NS('N')),
 			Rule::Chain(7, TS('d'), TS('t'), TS('i'), TS(':'), NS('E'), TS(';'), NS('N')),
 			Rule::Chain(4, TS('i'), TS(':'), NS('E'), TS(';')),
@@ -38,8 +38,16 @@ namespace GRB
 			Rule::Chain(3, TS('p'), TS('i'), TS(';')),
 			Rule::Chain(3, TS('p'), TS('l'), TS(';')),
 			Rule::Chain(3, TS('p'), NS('E'), TS(';')),
+
 			Rule::Chain(4, TS('d'), TS('t'), TS('i'), TS(';')),
-			Rule::Chain(8, TS('d'), TS('t'), TS('f'), TS('i'), TS('('), NS('F'), TS(')'), TS(';'))
+			Rule::Chain(8, TS('d'), TS('t'), TS('f'), TS('i'), TS('('), NS('F'), TS(')'), TS(';')),
+
+			Rule::Chain(4, TS('r'), TS('i'), TS(';'), NS('N')),
+			Rule::Chain(4, TS('r'), TS('l'), TS(';'), NS('N')),
+			Rule::Chain(4, TS('r'), NS('E'), TS(';'), NS('N')),
+			Rule::Chain(3, TS('r'), TS('i'), TS(';')),
+			Rule::Chain(3, TS('r'), TS('l'), TS(';')),
+			Rule::Chain(3, TS('r'), NS('E'), TS(';'))
 		),
 		Rule(
 			NS('E'), GRB_ERROR_SERIES + 2,

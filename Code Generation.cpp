@@ -1,463 +1,266 @@
 #include "Code Generation.h"
-#include "PolishNotation.h"
+#include <Windows.h>
+#include <locale>
+#include <codecvt>
+using namespace std;
 
-
-namespace Generation
+namespace Python
 {
-	int truecounter = 0;
-	int continuecounter = 0;
+	int tab = 0;
 
-	void CodeGeneration(LT::LexTable& lex, IT::IdTable& idt, char* filename)
+	void General(LT::LexTable& lex, IT::IdTable& idt, char* filename)
 	{
+		setlocale(0, "");
 		std::ofstream* file = new std::ofstream();
 		file->open(filename);
 		if (!file->is_open())
 		{
 			throw ERROR_THROW(8);
 		}
-		*file << MASM_HEAD;
-		*file << MASM_LIBS;
-		*file << MASM_PROTO;
-		*file << MASM_EXTERN;
-		*file << MASM_STACK;
-		LiteralGeneration(lex, idt, file);
-		VariableGeneration(lex, idt, file);
-		FunctionGeneration(lex, idt, file);
+		Function(lex, idt, file);
 	}
 
-	void LiteralGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream *file)
+	void Function(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file)
 	{
-		*file << MASM_CONST;
-
-		// каждый литерал в секции констант будет иметь свой номер
-		int boolliteral = 0;
-		int intliteral = 0;
-		int pintliteral = 0;
-		int strliteral = 0;
-		int signliteral = 0;
-
-		for (int i = 0; i < idt.size; i++)
+		char* functionname;
+		for (int position = 0; position < lex.size; position++)
 		{
-			if (idt.table[i].idtype == IT::L)
+			if(lex.table[position].lexema)
 			{
-				switch (idt.table[i].iddatatype)
+				if (lex.table[position].lexema == LEX_FUNCTION && lex.table[position + 1].lexema != LEX_MAIN)
 				{
-					case IT::INT:
-						*file << MASM_LITERAL_INT(++intliteral) << idt.table[i].value.vint << "\n";
-						break;
-					case IT::PINT:
-						*file << MASM_LITERAL_PINT(++pintliteral) << idt.table[i].value.vpint << "\n";
-						break;
-					case IT::BOOL:
-						*file << MASM_LITERAL_BOOL(++boolliteral) << idt.table[i].value.vbool.value << "\n";
-						break;
-					case IT::STR:
-						*file << MASM_LITERAL_STR(++strliteral) << "\"" << idt.table[i].value.vstr.str << "\", 0\n";
-						break;
-					case IT::SIGN:
-						*file << MASM_LITERAL_SIGN(++signliteral) << "\"" << idt.table[i].value.vsign << "\", 0\n";
-						break;
-					default:
-						throw ERROR_THROW(9);
-						break;
-				}
-			}
-		}
-	}
-
-	void VariableGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file)
-	{
-		*file << MASM_DATA;
-		for (int i = 0; i < idt.size; i++)
-		{
-			if (idt.table[i].idtype == IT::V)
-			{
-				*file << idt.table[i].function << "_";
-				switch (idt.table[i].iddatatype)
-				{
-					case IT::INT:
-						*file << MASM_VARIABLE_INT(idt.table[i].id) << idt.table[i].value.vint << "\n";
-						break; 
-					case IT::PINT:
-						*file << MASM_VARIABLE_PINT(idt.table[i].id) << idt.table[i].value.vpint << "\n";
-						break;
-					case IT::BOOL:
-						*file << MASM_VARIABLE_BOOL(idt.table[i].id) << idt.table[i].value.vbool.value << "\n";
-						break;
-					case IT::STR:
-						*file << MASM_VARIABLE_STR(idt.table[i].id) << "?\n";
-						break;
-					case IT::SIGN:
-						*file << MASM_VARIABLE_SIGN(idt.table[i].id) <<"\"" << idt.table[i].value.vsign << "\", 0\n";
-						break;
-					default:
-						throw ERROR_THROW(9);
-						break;	
-				}
-			}
-		}
-	}
-
-	void FunctionGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file)
-	{
-		*file << MASM_CODE;
-		char* buffer;
-		int boolliteral = 1;
-		int intliteral = 1;
-		int pintliteral = 1;
-		int strliteral = 1;
-		int signliteral = 1;
-		for (int i = 0; i < lex.size; i++)
-		{
-			switch (lex.table[i].lexema)
-			{
-				case LEX_MAIN:
-					*file << MASM_MAIN;
-					WithinFunctionGeneration(lex, idt, file, i, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-					*file << MASM_END;
-					break;
-				case LEX_FUNCTION:
-					if (lex.table[i + 2].idxTI == LT_TI_NULLIDX)
+					functionname = idt.table[lex.table[++(++position)].idxTI].id;
+					*file << "def " << functionname << "(";
+					for (++position; lex.table[position].lexema != LEX_LEFTBRACE; position++)
 					{
-						break;
-					}
-					buffer = idt.table[lex.table[++(++i)].idxTI].id;
-					*file << MASM_PROC(buffer);
-					for (++i; lex.table[i].lexema != LEX_LEFTBRACE; i++)
-					{
- 						switch (lex.table[i].lexema)
+						if (lex.table[position].lexema == LEX_ID)
 						{
-							case LEX_COMMA:
-								*file << LEX_COMMA << " ";
-								break;
-							case LEX_ID:
-								*file << " " << idt.table[lex.table[i].idxTI].function << "_" << idt.table[lex.table[i].idxTI].id << " : ";
-								switch (idt.table[i].iddatatype)
-								{
-									case IT::INT:
-										*file << "SDWORD";
-										break;
-									case IT::PINT:
-										*file << "DWORD";
-										break;
-									case IT::BOOL:
-										*file << "BYTE";
-										break;
-									case IT::STR:
-										*file << "BYTE";
-									case IT::SIGN:
-										*file << "BYTE";
-									default:
-										break;
-								}
-								break;
-							default:
-								break;
+							*file << idt.table[lex.table[position].idxTI].id;
+							if (lex.table[position + 3].lexema == LEX_ID)
+							{
+								*file << ", ";
+							}
 						}
 					}
+					*file << "):\n";
+					tab += 1;
+					WithinFunction(lex, idt, file, position);
+					tab -= 1;
 					*file << "\n";
-					WithinFunctionGeneration(lex, idt, file, i, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-					*file << MASM_RETURN;
-					*file << MASM_END_PROC(buffer);
+				}
+				else
+				{
+					*file << "def main():\n";
+					tab += 1;
+					WithinFunction(lex, idt, file, position);
+					tab -= 1;
+					*file << "\nmain()\n";
 					break;
-				default:
-					break;
+				}
 			}
 		}
 	}
 
-	void ValuePush(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& pos, int& boolliteral, int& intliteral, int& pintliteral, int& strliteral, int& signliteral)
-	{
-		switch (idt.table[lex.table[pos].idxTI].iddatatype)
-		{
-		case IT::INT:
-			*file << MASM_PUSH_ << "INT" << intliteral++ << "\n";
-			break;
-		case IT::PINT:
-			*file << MASM_PUSH_ << "PINT" << pintliteral++ << "\n";
-			break;
-		case IT::BOOL:
-			*file << "\tmov\tbl, BOOL" << boolliteral++ << "\n\tpush ebx\n";
-			break;
-		case IT::STR:
-			*file << MASM_PUSH_OFFSET_ << "STR" << strliteral++ << "\n";
-			break;
-		case IT::SIGN:
-			*file << MASM_PUSH_OFFSET_ << "SIGN" << signliteral++ << "\n";
-			break;
-		default:
-			break;
-		}
-		return;
-	}
-
-	void ValuePush(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
-	{
-		if (idt.table[lex.table[position].idxTI].iddatatype == IT::INT || idt.table[lex.table[position].idxTI].iddatatype == IT::PINT)
-		{
-			*file << MASM_PUSH(idt.table[lex.table[position].idxTI].id);
-		}
-		else if (idt.table[lex.table[position].idxTI].iddatatype == IT::BOOL)
-		{
-			*file << "\tmov bl, " << MASM_VARIABLE(position) << "\n";
-			*file << "\tpush ebx\n";
-		}
-		else if (idt.table[lex.table[position].idxTI].iddatatype == IT::STR)
-		{
-
-		}
-		return;
-	}
-
-	void WithinFunctionGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position, int& boolliteral, int& intliteral, int& pintliteral, int& strliteral, int& signliteral)
+	void WithinFunction(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
 	{
 		for (position; lex.table[position].lexema != LEX_BRACELET; position++)
 		{
-			int sourceposition = 0;
 			switch (lex.table[position].lexema)
 			{
-			// для присваивания значений выражений
 			case LEX_EQUAL:
-				ExpressionGeneration(lex, idt, file, position, sourceposition, boolliteral, intliteral, pintliteral, strliteral, signliteral);
+				Expression(lex, idt, file, position);
 				break;
 			case LEX_IF:
-
+				Condition(lex, idt, file, position);
 				break;
 			case LEX_PRINT:
-				if (lex.table[position + 1].lexema == LEX_LEFTHESIS)
-				{
-					PolishNotation::PolishNotation(++position, lex, idt);
-					LT::LexTableOut(lex);
-					IT::IDDATATYPE prev = IT::NONE;
-					for (position; lex.table[position].lexema != LEX_SEMICOLON; position++)
-					{
-						// преверяем каждую лексему
-						switch (lex.table[position].lexema)
-						{
-						// идентификатор помещает в стек для дальнейших действий
-						case LEX_ID:
-							prev = idt.table[lex.table[position].idxTI].iddatatype;
-							ValuePush(lex, idt, file, position);
-							break;
-						// литерал помещаем в стек для дальнейших действий
-						case LEX_LITERAL:
-							prev = idt.table[lex.table[position].idxTI].iddatatype;
-							ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-							break;
-						case LEX_OPERATION:
-							switch (lex.table[position].operation)
-							{
-							case '+':
-								// для целочисленных операндов
-								if (prev == IT::INT || prev == IT::PINT)
-								{
-									*file << MASM_ADD;
-								}
-								// для строковых и символьных операндов
-								else
-								{
-									*file << MASM_CONCAT;
-								}
-								break;
-							case '-':
-								*file << MASM_SUB;
-								break;
-							case '*':
-								*file << MASM_MUL;
-								break;
-							case '/':
-								*file << MASM_SUB;
-								break;
-							case '&':
-								*file << MASM_AND;
-								break;
-							case '\\':
-								*file << MASM_OR;
-								break;
-							case '>':
-								*file << MASM_JA(sourceposition);
-								break;
-							case '<':
-								*file << MASM_JB(sourceposition);
-								break;
-							case '1':
-								*file << MASM_JAE(sourceposition);
-								break;
-							case '2':
-								*file << MASM_JBE(sourceposition);
-								break;
-							case '=':
-								*file << MASM_JE(sourceposition);
-								break;
-							case '!':
-								*file << MASM_JNE(sourceposition);
-								break;
-							}
-						default:
-							break;
-						}
-					}
-					switch (prev)
-					{
-					case IT::INT:
-						*file << MASM_PRINT_INT;
-						break;
-					case IT::PINT:
-						*file << MASM_PRINT_PINT;
-						break;
-					case IT::BOOL:
-						*file << "\n\tmov bl, " << MASM_VARIABLE(position) << "\n\tpush ebx\n";
-						*file << MASM_PRINT_BOOL;
-						break;
-					case IT::STR:
-						*file << "\tpush eax\n\tinvoke WriteConsoleA, consoleHandle, eax, sizeof eax, 0, 0\n";
-						break;
-					case IT::SIGN:
-						*file << "\tpush eax\n\tinvoke WriteConsoleA, consoleHandle, eax, sizeof eax, 1, 0\n";
-						break;
-					}
-				}
-				// одиночное значение
-				else
-				{
-					if (lex.table[++position].lexema == LEX_LITERAL)
-					{
-						switch (idt.table[lex.table[position].idxTI].iddatatype)
-						{
-						case IT::INT:
-							ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-							*file << MASM_PRINT_INT;
-							break;
-						case IT::PINT:
-							ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-							*file << MASM_PRINT_PINT;
-							break;
-						case IT::BOOL:
-							*file << "\n\tmov bl, " << MASM_LITERAL("BOOL", boolliteral) << "\n\tpush ebx\n";
-							*file << MASM_PRINT_BOOL;
-							break;
-						case IT::STR:
-							*file << "\n\tmov eax, offset " << MASM_LITERAL("STR", strliteral) << "\n";
-							*file << MASM_PRINT_STR(MASM_LITERAL("STR", strliteral));
-							break;
-						case IT::SIGN:
-							*file << "\n\tmov eax, offset " << MASM_LITERAL("SIGN", signliteral) << "\n";
-							*file << MASM_PRINT_SIGN(MASM_LITERAL("SIGN", signliteral));
-							break;
-						}
-					}
-					else if (lex.table[position].lexema == LEX_ID)
-					{
-						switch (idt.table[lex.table[position].idxTI].iddatatype)
-						{
-						case IT::INT:
-							ValuePush(lex, idt, file, position);
-							*file << MASM_PRINT_INT;
-							break;
-						case IT::PINT:
-							ValuePush(lex, idt, file, position);
-							*file << MASM_PRINT_PINT;
-							break;
-						case IT::BOOL:
-							*file << "\n\tmov bl, " << MASM_VARIABLE(position) << "\n\tpush ebx\n";
-							*file << MASM_PRINT_BOOL;
-							break;
-						case IT::STR:
-							*file;
-							break;
-						case IT::SIGN:
-							*file;
-							break;
-						}
-					}
-					break;
+				Print(lex, idt, file, position);
+				break;
 			case LEX_RETURN:
+				Return(lex, idt, file, position);
 				break;
 			default:
 				break;
-				}
-
 			}
 		}
 	}
 
-	void ExpressionGeneration(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position, int& sourceposition, int& boolliteral, int& intliteral, int& pintliteral, int& strliteral, int& signliteral)
+	void Expression(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
 	{
-		sourceposition = position - 1;
-		PolishNotation::PolishNotation(++position, lex, idt);
-		LT::LexTableOut(lex);
-		for (position; lex.table[position].lexema != LEX_SEMICOLON; position++)
+		int sourceposition = 0;
+		//PolishNotation::PolishNotation(++position, lex, idt);
+		for (position; ; position++)
 		{
 			switch (lex.table[position].lexema)
 			{
-				// идентификатор помещается в стек для дальнейших действий
+			case LEX_EQUAL:
+				sourceposition = position - 1;
+				TAB(tab);
+				*file << OPERAND_NAME(sourceposition) << " = ";
+				break;
 			case LEX_ID:
-				ValuePush(lex, idt, file, position);
-				break;
-				// литерал помещается в стек для дальнейших действий
-			case LEX_LITERAL:
-				ValuePush(lex, idt, file, position, boolliteral, intliteral, pintliteral, strliteral, signliteral);
-				break;
-			case LEX_OPERATION:
-				switch (lex.table[position].operation)
+				if (OPERAND_TYPE(position) == IT::F)
 				{
-				case '+':
-					// сумма целочисленных значений
-					if (idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::INT || idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::PINT)
+					*file << OPERAND_NAME(position);
+					for (++position; lex.table[position].lexema != LEX_RIGHTHESIS; position++)
 					{
-						*file << MASM_ADD;
+						switch (lex.table[position].lexema)
+						{
+						case LEX_ID:
+							*file << OPERAND_NAME(position);
+							break;
+						case LEX_LITERAL:
+							OPERAND_VALUE(position);
+							break;
+						default:
+							*file << lex.table[position].lexema;
+							break;
+						}
+						
 					}
-					// конкатенация строковых и символьных значений
+					*file << ")";
+					if (lex.table[position + 1].lexema == LEX_SEMICOLON)
+					{
+						*file << "\n";
+						return;
+					}
+				}
+				else
+				{
+					if (lex.table[position + 1].lexema == LEX_EQUAL)
+					{
+						TAB(tab);
+						*file << OPERAND_NAME(position) << " = ";
+						position += 1;
+					}
 					else
 					{
-						*file << MASM_CONCAT;
+						*file << OPERAND_NAME(position) << " ";
 					}
-					break;
-				case '-':
-					*file << MASM_SUB;
-					break;
-				case '*':
-					*file << MASM_MUL;
-					break;
-				case '/':
-					*file << MASM_SUB;
-					break;
-				case '&':
-					*file << MASM_AND;
-					break;
-				case '\\':
-					*file << MASM_OR;
-					break;
-				case '>':
-					*file << MASM_JA(sourceposition);
-					break;
-				case '<':
-					*file << MASM_JB(sourceposition);
-					break;
-				case '1':
-					*file << MASM_JAE(sourceposition);
-					break;
-				case '2':
-					*file << MASM_JBE(sourceposition);
-					break;
-				case '=':
-					*file << MASM_JE(sourceposition);
-					break;
-				case '!':
-					*file << MASM_JNE(sourceposition);
-					break;
 				}
-			default:
+				break;
+			case LEX_LITERAL:
+				OPERAND_VALUE(position);
+				break;
+			case LEX_OPERATION:
+				OPERATION(position);
+				break;
+			case LEX_SEMICOLON:
+				*file << "\n";
+				return;
+			}
+		}
+	}
+
+	void Condition(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	{
+		for (position; ; position++)
+		{
+			switch (lex.table[position].lexema)
+			{
+			case LEX_IF:
+				TAB(tab);
+				*file << "if";
+				break;
+			case LEX_ELIF:
+				TAB(tab);
+				*file << "elif";
+				break;
+			case LEX_ELSE:
+				TAB(tab);
+				*file << "else";
+				break;
+			case LEX_LEFTHESIS:
+				*file << " ";
+				break;
+			case LEX_ID:
+				*file << OPERAND_NAME(position);
+				break;
+			case LEX_OPERATION:
+				OPERATION(position);
+				break;
+			case LEX_LITERAL:
+				OPERAND_VALUE(position);
+				break;
+			case LEX_RIGHTHESIS:
+				break;
+			case LEX_LEFTBRACE:
+				*file << ":\n";
+				tab++;
+				WithinFunction(lex, idt, file, position);
+				tab--;
+				if (lex.table[position + 1].lexema != LEX_ELIF && lex.table[position + 1].lexema != LEX_ELSE)
+				{
+					return;
+				}
 				break;
 			}
 		}
-		if (idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::INT || idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::PINT)
+	}
+
+	void Print(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	{
+		for (position; ; position++)
 		{
-			*file << MASM_MOV;
+			switch (lex.table[position].lexema)
+			{
+			case LEX_PRINT:
+				TAB(tab)
+				*file << "print ";
+				break;
+			case LEX_LEFTHESIS:
+				*file << LEX_LEFTHESIS;
+				break;
+			case LEX_ID:
+				*file << OPERAND_NAME(position);
+				break;
+			case LEX_OPERATION:
+				OPERATION(position);
+				break;
+			case LEX_LITERAL:
+				OPERAND_VALUE(position);
+				break;
+			case LEX_RIGHTHESIS:
+				*file << LEX_RIGHTHESIS;
+				break;
+			case LEX_SEMICOLON:
+				*file << "\n";
+				position--;
+				return;
+			}
 		}
-		else if (idt.table[lex.table[sourceposition].idxTI].iddatatype == IT::BOOL && lex.table[sourceposition + 3].lexema == LEX_SEMICOLON)
+	}
+
+	void Return(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	{
+		for (position; ; position++)
 		{
-			*file << "\tmov " << MASM_VARIABLE(sourceposition) << ", bl\n";
+			switch (lex.table[position].lexema)
+			{
+			case LEX_RETURN:
+				TAB(tab)
+				*file << "return ";
+				break;
+			case LEX_LEFTHESIS:
+				*file << LEX_LEFTHESIS;
+				break;
+			case LEX_ID:
+				*file << OPERAND_NAME(position) << " ";
+				break;
+			case LEX_OPERATION:
+				OPERATION(position);
+				break;
+			case LEX_LITERAL:
+				OPERAND_VALUE(position);
+				break;
+			case LEX_RIGHTHESIS:
+				*file << LEX_RIGHTHESIS;
+				break;
+			case LEX_SEMICOLON:
+				*file << "\n";
+				position--;
+				return;
+			}
 		}
 	}
 }

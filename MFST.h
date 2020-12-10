@@ -2,6 +2,8 @@
 #include <stack>
 #include "GRB.h"
 #include "LexTable.h"
+#include "IdTable.h"
+
 
 #define MFST_DIAGN_MAXSIZE 2*ERROR_MAXSIZE_MESSAGE
 #define MFST_DIAGN_NUMBER 3
@@ -95,7 +97,8 @@ namespace MFST
 		short nrulechain;
 		short lenta_size;
 		GRB::Greibach grebach;
-		LT::LEX lex;
+		LT::LexTable lex;
+		IT::IdTable idt;
 		MFSTSTSTACK st;
 		MFSTSTATE storestate;
 
@@ -104,12 +107,12 @@ namespace MFST
 			lenta = 0;
 			lenta_size = lenta_position = 0;
 		}
-		Mfst(LT::LEX plex, GRB::Greibach pgrebach)
+		Mfst(LT::LexTable plex, GRB::Greibach pgrebach)
 		{
 			grebach = pgrebach;
 			lex = plex;
-			lenta = new short[lenta_size = lex.lextable.size];
-			for (int k = 0; k < lenta_size; k++) lenta[k] = TS(lex.lextable.table[k].lexema);
+			lenta = new short[lenta_size = lex.size];
+			for (int k = 0; k < lenta_size; k++) lenta[k] = TS(lex.table[k].lexema);
 			lenta_position = 0;
 			st.push(grebach.stbottomT);
 			st.push(grebach.startN);

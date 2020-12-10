@@ -1,4 +1,5 @@
 #pragma once
+#include "LexTable.h"
 #define ID_MAXSIZE		10 // to fix
 #define FUNC_MAXAMOUNT	64 // максимальное допустимое число вызовов функций
 #define PARM_MAXAMOUNT	5 // максимальное число параметров функции
@@ -57,7 +58,8 @@ namespace IT
 		int size					// предполагаема€ емкость таблицы < TI_MAXSIZE
 	);
 
-	void Add(						// добавление строки в таблицу идентификаторов
+	void Add(	
+		LT::LexTable& lex,
 		IdTable& idtable,			// экземпл€р таблицы идентификаторов
 		Entry entry,				// добавл€ема€ строка таблицы идентификаторов
 		int line,
@@ -65,6 +67,7 @@ namespace IT
 	);
 
 	void Add(						// добавление строки в таблицу идентификаторов
+		LT::LexTable& lex,
 		IdTable& idtable,			// экземпл€р таблицы идентификаторов
 		Entry entry,				// добавл€ема€ строка таблицы идентификаторов
 		int line,

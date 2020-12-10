@@ -6,62 +6,62 @@
 namespace Semantic
 {
 	// Пошаговый анализ выражений, входящих в состав таблицы лексем
-	void FindExpressions(LT::LEX& lex)
+	void FindExpressions(LT::LexTable& lex, IT::IdTable& idt)
 	{
 		uint start_time = clock(), end_time;
 		int begin = 0; // позиция итератора в начале каждой строки, для удобства вывода сообщений о позиции лексемы в строке
-		for (int i = 0, lineCounter = 0; i < lex.lextable.size; i++)
+		for (int i = 0, lineCounter = 0; i < lex.size; i++)
 		{
 			// определение текущего номера строки
-			if (lex.lextable.table[i].sn != lineCounter) 
+			if (lex.table[i].sn != lineCounter) 
 			{
 				begin = i;
-				lineCounter = lex.lextable.table[i].sn;
+				lineCounter = lex.table[i].sn;
 				if (lineCounter == 7)
 				{
 					int a = 10;
 				}
 			}
 			// если условная конструкция if/elif
-			if (lex.lextable.table[i].lexema == '?' || lex.lextable.table[i].lexema == 'z')
+			if (lex.table[i].lexema == '?' || lex.table[i].lexema == 'z')
 			{
-				CheckoutBooleanExpression(lex.lextable, lex.idtable, begin - 1, lineCounter, i);
+				CheckoutBooleanExpression(lex, idt, begin - 1, lineCounter, i);
 			}
 			// если объявление функции
-			else if (lex.lextable.table[i].lexema == 'f')
+			else if (lex.table[i].lexema == 'f')
 			{
-				while (lex.lextable.table[i].sn == lineCounter)
+				while (lex.table[i].sn == lineCounter)
 				{
 					i++;
 				}
 			}
 			// если идентификатор
-			else if (lex.lextable.table[i].lexema == 'i')
+			else if (lex.table[i].lexema == 'i')
 			{
-				switch (lex.idtable.table[lex.lextable.table[i].idxTI].iddatatype)
+				switch (idt.table[lex.table[i].idxTI].iddatatype)
 				{
 					case IT::INT:
-						CheckoutIntegerExpression(lex.lextable, lex.idtable, begin - 1, lineCounter, i);
+						CheckoutIntegerExpression(lex, idt, begin - 1, lineCounter, i);
 						break;
 					case IT::PINT:
-						CheckoutIntegerExpression(lex.lextable, lex.idtable, begin - 1, lineCounter, i);
+						CheckoutIntegerExpression(lex, idt, begin - 1, lineCounter, i);
 						break;
 					case IT::BOOL:
-						CheckoutBooleanExpression(lex.lextable, lex.idtable, begin - 1, lineCounter, i);
+						CheckoutBooleanExpression(lex, idt, begin - 1, lineCounter, i);
 						break;
 					case IT::STR:
-						CheckoutStringExpression(lex.lextable, lex.idtable, begin - 1, lineCounter, i);
+						CheckoutStringExpression(lex, idt, begin - 1, lineCounter, i);
 						break;
 					case IT::SIGN:
-						CheckoutSignExpression(lex.lextable, lex.idtable, begin - 1, lineCounter, i);
+						CheckoutSignExpression(lex, idt, begin - 1, lineCounter, i);
 						break;
 					default:
 						throw ERROR_THROW_IN(305, lineCounter, i - begin);
 				}
 			}
-			else if (lex.lextable.table[i].lexema == 'p')
+			else if (lex.table[i].lexema == 'p')
 			{
-				CheckoutPrint(lex.lextable, lex.idtable, begin, lineCounter, i);
+				CheckoutPrint(lex, idt, begin, lineCounter, i);
 			}
 		}
 		end_time = clock();
@@ -74,7 +74,7 @@ namespace Semantic
 		{
 			std::cout << end_time - start_time << " мс\n";
 		}
-		//PolishNotation::Checkout(lex.lextable, lex.idtable);
+		//PolishNotation::Checkout(lex, idt);
 		return;
 	}
 
