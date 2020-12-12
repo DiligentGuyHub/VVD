@@ -7,7 +7,6 @@
 #include "MFST.h"
 #include "Semantic Analysis.h"
 #include "Code Generation.h"
-#include "PolishNotation.h"
 
 int main(int argc, char* argv[])
 {
@@ -45,11 +44,16 @@ int main(int argc, char* argv[])
 #ifdef SEMANTIC_ANALYSIS
 		//Semantic::FindExpressions(lex, idt);
 #endif
-		LexTableOut(lex);
-		IdTableOut(idt);
 		
+#ifdef PYTHON_CODE_GENERATION
 		char python[] = "VVD_python/VVD_python.py";
 		Python::General(lex, idt, python);
+#endif
+
+#ifdef LEX_TABLE_OUT
+		LexTableOut(lex);
+		IdTableOut(idt);
+#endif
 
 		WriteLog(log);
 		WriteParm(log, parm);

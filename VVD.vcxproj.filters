@@ -57,9 +57,6 @@
     <ClCompile Include="IdTable.cpp">
       <Filter>Исходные файлы\1. Lexical Analysis</Filter>
     </ClCompile>
-    <ClCompile Include="MFST.cpp">
-      <Filter>Исходные файлы\2. Syntax Analysis</Filter>
-    </ClCompile>
     <ClCompile Include="GRB.cpp">
       <Filter>Исходные файлы\2. Syntax Analysis</Filter>
     </ClCompile>
@@ -95,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="PolishNotation.cpp">
       <Filter>Исходные файлы\4. Code Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="MFST.cpp">
+      <Filter>Исходные файлы\2. Syntax Analysis</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,10 +154,5 @@
     <Text Include="Source.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="masm.asm">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
   </ItemGroup>
 </Project>

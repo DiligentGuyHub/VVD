@@ -67,7 +67,6 @@ namespace LT		// таблица лексем
 	{
 		int		maxsize;				// емкость таблица лексем < LT_MAXSIZE
 		int		size;					// текущий размер таблица лексем < maxsize
-		int		expressionsAmount;
 		Entry* table;					// массив строк таблицы лексем
 	};
 

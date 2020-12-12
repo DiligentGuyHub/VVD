@@ -1,24 +1,29 @@
-def Max(first, second, diff, eq):
+from StandardLibrary import *
+
+def Max(first, second):
 	if first > second:
-		result = first 
-		print (diff)
-		print (result)
+		return first
 	elif second > first:
-		result = second 
-		print (diff)
-		print (result)
+		return second
+	return 1
+
+def Min(first, second):
+	if first < second:
+		return first
+	elif second > first:
+		return second
 	else:
-		print (eq)
 		return 0
 	return 1
 
 def main():
-	first = 58 + -13
-	second = 32
-	str1 = "Max number is: "
-	str2 = "Numbers are equal!"
-	result = Max(first,second,str1,str2) + Max(first,second,str1,str2)
-	print (result)
+	value = 20
+	mess = "Conjuction of two numbers equals: "
+	conj = Max(10,20) & Min(30,40)
+
+	result = IntStr(conj)
+
+	print (mess + result)
 	return 1
 
 main()

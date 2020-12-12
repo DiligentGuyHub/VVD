@@ -179,9 +179,6 @@
     <Text Include="out.txt" />
     <Text Include="Source.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="masm.asm" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

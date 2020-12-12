@@ -10,17 +10,23 @@ namespace Python
 
 	void General(LT::LexTable& lex, IT::IdTable& idt, char* filename)
 	{
+		unsigned int start = clock();
 		setlocale(0, "");
-		std::ofstream* file = new std::ofstream();
+		std::wofstream* file = new std::wofstream();
 		file->open(filename);
 		if (!file->is_open())
 		{
 			throw ERROR_THROW(8);
 		}
+		STANDARD_LIBRARY;
 		Function(lex, idt, file);
+		unsigned int end = clock();
+		std::cout << "\nГенерация кода завершена успешно\nВремя выполнения: " << end - start << " мс\n";
+		file->close();
+		return;
 	}
 
-	void Function(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file)
+	void Function(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file)
 	{
 		char* functionname;
 		for (int position = 0; position < lex.size; position++)
@@ -61,7 +67,7 @@ namespace Python
 		}
 	}
 
-	void WithinFunction(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	void WithinFunction(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
 	{
 		for (position; lex.table[position].lexema != LEX_BRACELET; position++)
 		{
@@ -85,7 +91,48 @@ namespace Python
 		}
 	}
 
-	void Expression(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	void Call(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
+	{
+		*file << OPERAND_NAME(position);
+		for (++position; lex.table[position].lexema != LEX_RIGHTHESIS; position++)
+		{
+			switch (lex.table[position].lexema)
+			{
+			case LEX_ID:
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					Call(lex, idt, file, position);
+				}
+				else
+				{
+					*file << OPERAND_NAME(position);
+				}
+				break;
+			case LEX_LITERAL:
+				OPERAND_VALUE(position);
+				break;
+			case LEX_OPERATION:
+				OPERATION(position);
+				break;
+			default:
+				*file << lex.table[position].lexema;
+				break;
+			}
+
+		}
+		*file << ")";
+		if (lex.table[position + 1].lexema == LEX_SEMICOLON)
+		{
+			*file << "\n";
+			return;
+		}
+		else if (lex.table[position + 1].lexema == LEX_COMMA)
+		{
+			return;
+		}
+	}
+
+	void Expression(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
 	{
 		int sourceposition = 0;
 		//PolishNotation::PolishNotation(++position, lex, idt);
@@ -101,29 +148,7 @@ namespace Python
 			case LEX_ID:
 				if (OPERAND_TYPE(position) == IT::F)
 				{
-					*file << OPERAND_NAME(position);
-					for (++position; lex.table[position].lexema != LEX_RIGHTHESIS; position++)
-					{
-						switch (lex.table[position].lexema)
-						{
-						case LEX_ID:
-							*file << OPERAND_NAME(position);
-							break;
-						case LEX_LITERAL:
-							OPERAND_VALUE(position);
-							break;
-						default:
-							*file << lex.table[position].lexema;
-							break;
-						}
-						
-					}
-					*file << ")";
-					if (lex.table[position + 1].lexema == LEX_SEMICOLON)
-					{
-						*file << "\n";
-						return;
-					}
+					Call(lex, idt, file, position);
 				}
 				else
 				{
@@ -152,7 +177,7 @@ namespace Python
 		}
 	}
 
-	void Condition(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	void Condition(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
 	{
 		for (position; ; position++)
 		{
@@ -198,7 +223,7 @@ namespace Python
 		}
 	}
 
-	void Print(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	void Print(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
 	{
 		for (position; ; position++)
 		{
@@ -212,7 +237,14 @@ namespace Python
 				*file << LEX_LEFTHESIS;
 				break;
 			case LEX_ID:
-				*file << OPERAND_NAME(position);
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					Call(lex, idt, file, position);
+				}
+				else
+				{
+					*file << OPERAND_NAME(position);
+				}
 				break;
 			case LEX_OPERATION:
 				OPERATION(position);
@@ -231,7 +263,7 @@ namespace Python
 		}
 	}
 
-	void Return(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position)
+	void Return(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
 	{
 		for (position; ; position++)
 		{
@@ -245,7 +277,14 @@ namespace Python
 				*file << LEX_LEFTHESIS;
 				break;
 			case LEX_ID:
-				*file << OPERAND_NAME(position) << " ";
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					Call(lex, idt, file, position);
+				}
+				else
+				{
+					*file << OPERAND_NAME(position);
+				}
 				break;
 			case LEX_OPERATION:
 				OPERATION(position);
@@ -263,4 +302,5 @@ namespace Python
 			}
 		}
 	}
+
 }

@@ -3,6 +3,9 @@
 #include "Error.h"
 #include <iomanip>
 #include <fstream>
+#include <time.h>
+
+#define STANDARD_LIBRARY		*file << "from StandardLibrary import *\n\n"
 
 #define OPERAND_NAME(n)			idt.table[lex.table[n].idxTI].id
 #define OPERAND_DATATYPE(n)		idt.table[lex.table[n].idxTI].iddatatype
@@ -27,11 +30,14 @@
 								}
 #define OPERATION(n)			switch (lex.table[n].operation)	\
 								{\
+								case '~': \
+									*file << " ~"; \
+									break; \
 								case '&': \
-									*file << " and "; \
+									*file << " & "; \
 									break; \
 								case '\\': \
-									*file << " or "; \
+									*file << " | "; \
 									break; \
 								case '>': \
 									*file << " > "; \
@@ -67,11 +73,11 @@ namespace Python
 	extern int tab;
 
 	void General(LT::LexTable& lex, IT::IdTable& idt, char* filename);
-	void Function(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file);
-	void WithinFunction(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position);
-	void Expression(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position);
-	void Condition(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position);
-	void Print(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position);
-	void Return(LT::LexTable& lex, IT::IdTable& idt, std::ofstream* file, int& position);
+	void Function(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file);
+	void WithinFunction(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position);
+	void Expression(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position);
+	void Condition(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position);
+	void Print(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position);
+	void Return(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position);
 
 }

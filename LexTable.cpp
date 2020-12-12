@@ -16,7 +16,6 @@ namespace LT {
 		LexTable lex;
 		lex.maxsize = size;
 		lex.size = 0;
-		lex.expressionsAmount = 0;
 		lex.table = new Entry[size];
 		return lex;
 	}

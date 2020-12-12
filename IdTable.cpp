@@ -131,7 +131,6 @@ namespace IT {
 
 	void IdTableOut(IdTable idt)
 	{
-#ifdef ID_TABLE_OUT
 		std::cout << "\n\nНомер\tНазвание\tОбласть\t\tИндекс\t\tТип данных\tТип идентификатора\tЗначение\n";
 		for (int i = 0; i < idt.size; i++)
 		{
@@ -226,7 +225,6 @@ namespace IT {
 			}
 
 		}
-#endif
 		return;
 	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "LexTable.h"
-#define ID_MAXSIZE		10 // to fix
+#define ID_MAXSIZE		15 // to fix
 #define FUNC_MAXAMOUNT	64 // максимальное допустимое число вызовов функций
 #define PARM_MAXAMOUNT	5 // максимальное число параметров функции
 #define IT_MAXSIZE		4096

@@ -1,6 +1,6 @@
 
 -------ПРОТОКОЛ:-------
-ВРЕМЯ ВЫПОЛНЕНИЯ: 11.12.2020 пятница 00:50:22
+ВРЕМЯ ВЫПОЛНЕНИЯ: 11.12.2020 пятница 21:34:17
 
 ------ПАРАМЕТРЫ------
 -in:  in.txt
@@ -9,12 +9,12 @@
 
 ------ИСХОДНЫЕ ДАННЫЕ------
 
-Всего символов: 527
-Всего строк: 28
+Всего символов: 476
+Всего строк: 31
 Всего пропущено: 0
 
 Преобразованный файл: 
-function int Max(int first,pint second,string diff,string eq){|def string result;|if(first > second){|result=first;|print(diff);|print(result);|}|elif(second > first){|result=second;|print(diff);|print(result);|}|else{|print(eq);|return 0;|}|return 1;|}||function main{|def int first=2.111010+(-8.15);|def pint second=32;|def string str1="Max number is: ";|def string str2="Numbers are equal!";|def bool result=Max(first,second,str1,str2)+Max(first,second,str1,str2);|print(result);|return 1;|}
+function int Max(int first,pint second){|if(first > second){|return first;|}|elif(second > first){|return second;|}|return 1;|}||function int Min(int first,pint second){|if(first < second){|return first;|}|elif(second > first){|return second;|}|else{|return 0;|}|return 1;|}||function main{|def int value=20;|def string mess="Conjuction of two numbers equals: ";|def int conj=Max(10,20)& Min(30,40);|def int result=IntStr(conj);|print(mess+result);|return 1;|}
 
 Таблица лексем:
-001 fti(ti,ti,ti,ti){dti;?(ivi){i:i;p(i);p(i);}z(ivi){i:i;p(i);p(i);}e{p(i);rl;}rl;}fm{dti:lv(l);dti:l;dti:l;dti:l;dti:i(i,i,i,i)vi(i,i,i,i);p(i);rl;}
+001 fti(ti,ti){?(ivi){ri;}z(ivi){ri;}rl;}fti(ti,ti){?(ivi){ri;}z(ivi){ri;}e{rl;}rl;}fm{dti:l;dti:l;dti:i(l,l)vi(l,l);dti:i(i);p(ivi);rl;}

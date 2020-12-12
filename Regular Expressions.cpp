@@ -491,41 +491,41 @@
 }
 
 // 66
-#define CYRILLIC(n)\
-										FST::RELATION('à', n), FST::RELATION('í', n), \
-										FST::RELATION('á', n), FST::RELATION('î', n), \
-										FST::RELATION('â', n), FST::RELATION('ï', n), \
-										FST::RELATION('ã', n), FST::RELATION('ð', n), \
-										FST::RELATION('ä', n), FST::RELATION('ñ', n), \
-										FST::RELATION('å', n), FST::RELATION('ò', n), \
-										FST::RELATION('¸', n), FST::RELATION('ó', n), \
-										FST::RELATION('æ', n), FST::RELATION('ô', n), \
-										FST::RELATION('ç', n), FST::RELATION('õ', n), \
-										FST::RELATION('è', n), FST::RELATION('ö', n), \
-										FST::RELATION('é', n), FST::RELATION('÷', n), \
-										FST::RELATION('ê', n), FST::RELATION('ø', n), \
-										FST::RELATION('ë', n), FST::RELATION('ù', n), \
-										FST::RELATION('ì', n), FST::RELATION('ü', n), \
-										FST::RELATION('ú', n), FST::RELATION('û', n), \
-										FST::RELATION('ý', n), FST::RELATION('þ', n), \
-										FST::RELATION('ÿ', n), \
-										FST::RELATION('À', n), FST::RELATION('Í', n), \
-										FST::RELATION('Á', n), FST::RELATION('Î', n), \
-										FST::RELATION('Â', n), FST::RELATION('Ï', n), \
-										FST::RELATION('Ã', n), FST::RELATION('Ð', n), \
-										FST::RELATION('Ä', n), FST::RELATION('Ñ', n), \
-										FST::RELATION('Å', n), FST::RELATION('Ò', n), \
-										FST::RELATION('¨', n), FST::RELATION('Ó', n), \
-										FST::RELATION('Æ', n), FST::RELATION('Ô', n), \
-										FST::RELATION('Ç', n), FST::RELATION('Õ', n), \
-										FST::RELATION('È', n), FST::RELATION('Ö', n), \
-										FST::RELATION('É', n), FST::RELATION('×', n), \
-										FST::RELATION('Ê', n), FST::RELATION('Ø', n), \
-										FST::RELATION('Ë', n), FST::RELATION('Ù', n), \
-										FST::RELATION('Ì', n), FST::RELATION('Ü', n), \
-										FST::RELATION('Ú', n), FST::RELATION('Û', n), \
-										FST::RELATION('Ý', n), FST::RELATION('Þ', n), \
-										FST::RELATION('ß', n) \
+//#define CYRILLIC(n)\
+//										FST::RELATION('à', n), FST::RELATION('í', n), \
+//										FST::RELATION('á', n), FST::RELATION('î', n), \
+//										FST::RELATION('â', n), FST::RELATION('ï', n), \
+//										FST::RELATION('ã', n), FST::RELATION('ð', n), \
+//										FST::RELATION('ä', n), FST::RELATION('ñ', n), \
+//										FST::RELATION('å', n), FST::RELATION('ò', n), \
+//										FST::RELATION('¸', n), FST::RELATION('ó', n), \
+//										FST::RELATION('æ', n), FST::RELATION('ô', n), \
+//										FST::RELATION('ç', n), FST::RELATION('õ', n), \
+//										FST::RELATION('è', n), FST::RELATION('ö', n), \
+//										FST::RELATION('é', n), FST::RELATION('÷', n), \
+//										FST::RELATION('ê', n), FST::RELATION('ø', n), \
+//										FST::RELATION('ë', n), FST::RELATION('ù', n), \
+//										FST::RELATION('ì', n), FST::RELATION('ü', n), \
+//										FST::RELATION('ú', n), FST::RELATION('û', n), \
+//										FST::RELATION('ý', n), FST::RELATION('þ', n), \
+//										FST::RELATION('ÿ', n), \
+//										FST::RELATION('À', n), FST::RELATION('Í', n), \
+//										FST::RELATION('Á', n), FST::RELATION('Î', n), \
+//										FST::RELATION('Â', n), FST::RELATION('Ï', n), \
+//										FST::RELATION('Ã', n), FST::RELATION('Ð', n), \
+//										FST::RELATION('Ä', n), FST::RELATION('Ñ', n), \
+//										FST::RELATION('Å', n), FST::RELATION('Ò', n), \
+//										FST::RELATION('¨', n), FST::RELATION('Ó', n), \
+//										FST::RELATION('Æ', n), FST::RELATION('Ô', n), \
+//										FST::RELATION('Ç', n), FST::RELATION('Õ', n), \
+//										FST::RELATION('È', n), FST::RELATION('Ö', n), \
+//										FST::RELATION('É', n), FST::RELATION('×', n), \
+//										FST::RELATION('Ê', n), FST::RELATION('Ø', n), \
+//										FST::RELATION('Ë', n), FST::RELATION('Ù', n), \
+//										FST::RELATION('Ì', n), FST::RELATION('Ü', n), \
+//										FST::RELATION('Ú', n), FST::RELATION('Û', n), \
+//										FST::RELATION('Ý', n), FST::RELATION('Þ', n), \
+//										FST::RELATION('ß', n) \
 
 // 52
 #define LATIN(n)\
@@ -578,13 +578,11 @@
 #define STR_LITERAL(string) { string, \
 							4, \
 							FST::NODE(1,	FST::RELATION('"',1)), \
-							FST::NODE(294,	\
+							FST::NODE(162,	\
 											LATIN(1), \
-											CYRILLIC(1), \
 											NUMSANDOPS(1), \
 											PUNCTUATION(1), \
 											LATIN(2),\
-											CYRILLIC(2), \
 											NUMSANDOPS(2), \
 											PUNCTUATION(2) \
 											),\
@@ -595,9 +593,8 @@
 #define SIGN_LITERAL(string) { string, \
 							4, \
 							FST::NODE(1,	FST::RELATION('"',1)), \
-							FST::NODE(174,	\
+							FST::NODE(81,	\
 											LATIN(2),\
-											CYRILLIC(2), \
 											NUMSANDOPS(2), \
 											PUNCTUATION(2) \
 											),\

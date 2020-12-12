@@ -12,9 +12,11 @@ namespace GRB
 		7,
 		Rule(
 			NS('S'), GRB_ERROR_SERIES + 0,
-			5,
+			7,
 			Rule::Chain(13, TS('f'), TS('t'), TS('i'), TS('('), NS('F'), TS(')'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S')),
+			Rule::Chain(10, TS('f'), TS('t'), TS('i'), TS('('), NS('F'), TS(')'), TS('{'), NS('N'), TS('}'), NS('S')),
 			Rule::Chain(8,	TS('f'), TS('m'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}')),
+			Rule::Chain(5,	TS('f'), TS('m'), TS('{'), NS('N'), TS('}')),
 			Rule::Chain(7,  TS('f'), TS('m'), TS('{'), TS('r'), NS('E'), TS(';'), TS('}')),
 			Rule::Chain(9,	TS('f'), TS('m'), TS('{'), NS('N'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S')),
 			Rule::Chain(8,	TS('f'), TS('m'), TS('{'), TS('r'), NS('E'), TS(';'), TS('}'), NS('S'))
@@ -51,19 +53,20 @@ namespace GRB
 		),
 		Rule(
 			NS('E'), GRB_ERROR_SERIES + 2,
-			8,
+			9,
 			Rule::Chain(1, TS('i')),
+			Rule::Chain(2, TS('~'), TS('i')),
 			Rule::Chain(1, TS('l')),
 			Rule::Chain(3, TS('('), NS('E'), TS(')')),
-			Rule::Chain(4, TS('i'), TS('('), NS('W'), TS(')')),
 
+			Rule::Chain(4, TS('i'), TS('('), NS('W'), TS(')')),
 			Rule::Chain(2, TS('i'), NS('M')),
 			Rule::Chain(2, TS('l'), NS('M')),
 			Rule::Chain(4, TS('('), NS('E'), TS(')'), NS('M')),
 			Rule::Chain(5, TS('i'), TS('('), NS('W'), TS(')'), NS('M'))
 		),
 		Rule(
-			NS('F'), GRB_ERROR_SERIES + 4,
+			NS('F'), GRB_ERROR_SERIES + 3,
 			2,
 			Rule::Chain(2, TS('t'), TS('i')),
 			Rule::Chain(4, TS('t'), TS('i'), TS(','), NS('F'))
@@ -84,11 +87,12 @@ namespace GRB
 			Rule::Chain(3, TS('v'), NS('E'), NS('M'))
 		),
 		Rule(
-			NS('I'), GRB_ERROR_SERIES + 8,
-			4,
+			NS('I'), GRB_ERROR_SERIES + 6,
+			5,
 			Rule::Chain(7, TS('('), NS('E'), TS(')'), TS('{'), NS('N'), TS('}')),
 			Rule::Chain(7,	TS('('), NS('E'), TS(')'), TS('{'), NS('N'), TS('}'), NS('I')),
 			Rule::Chain(8, TS('z'), TS('('), NS('E'), TS(')'), TS('{'), NS('N'), TS('}'), NS('I')),
+			Rule::Chain(7, TS('z'), TS('('), NS('E'), TS(')'), TS('{'), NS('N'), TS('}')),
 			Rule::Chain(4,	TS('e'), TS('{'), NS('N'), TS('}'))
 		)
 	);
