@@ -9,9 +9,6 @@ namespace LT
 	LT::OPERATIONTYPE optype;
 	bool withinIf = false;
 	bool withinElse = false;
-
-	bool withinCall = false;
-
 	bool mainDefined = false;
 	bool typeDefined = false;
 
@@ -20,6 +17,8 @@ namespace LT
 	int pintliteral = 0;
 	int strliteral = 0;
 	int signliteral = 0;
+
+	int begin = 0;
 
 	char function[10][10];
 	int index = -1;
@@ -47,13 +46,10 @@ namespace LT
 
 	LexTable& CreateEntry(LexTable& lex, IT::IdTable& idt, char* buffer, int line, int id)
 	{
-		
-
 		LT::Entry lex_entry;
 		IT::Entry id_entry;
 		switch (buffer[0])
 		{
-
 		case 'i':
 		{
 			FST::FST fst(INT(buffer));
@@ -196,7 +192,7 @@ namespace LT
 				}
 				else
 				{
-					throw ERROR_THROW(104);
+					throw ERROR_THROW(300);
 				}
 			}
 			break;
@@ -318,11 +314,6 @@ namespace LT
 			FST::FST fst(SEMICOLON(buffer));
 			if (FST::execute(fst, line))
 			{
-				// если это был вызов функции, то он завершается
-				if (withinCall)
-				{
-					withinCall = !withinCall;
-				}
 				typeDefined = false;
 				previousDataType = IT::NONE;
 				LexEntryFill(lex_entry, line, LEX_SEMICOLON, LT_TI_NULLIDX);
@@ -416,6 +407,10 @@ namespace LT
 				id_entry.iddatatype = IT::STR;
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
+				if ((strlen(buffer) - 2) > 255)
+				{
+					throw ERROR_THROW_IN(309, line, -1);
+				}
 				id_entry.value.vstr.len = strlen(buffer) - 2;
 				strcpy_s(id_entry.value.vstr.str, DeleteFirstAndLast(buffer, id_entry.value.vstr.len + 2));
 				strcpy_s(id_entry.id, "STR");
@@ -450,6 +445,10 @@ namespace LT
 			FST::FST nfst(NEG_NUMBER10(buffer));
 			if (FST::execute(nfst, line))
 			{
+				if (previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
 				strcpy_s(id_entry.function, function[index]);
 				id_entry.index = index;
@@ -457,6 +456,14 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = atoi(buffer);
+				if ((id_entry.value.vint > 2147483647 || id_entry.value.vint < -2147483648) && previousDataType == IT::INT)
+				{
+					throw ERROR_THROW_IN(307, line, -1);
+				}
+				else if ((id_entry.value.vint > 4294967295 || id_entry.value.vint < 0) && previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				strcpy_s(id_entry.id, "INT");
 				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(lex, idt, id_entry, line, id);
@@ -467,6 +474,10 @@ namespace LT
 			FST::FST fst2(NEG_NUMBER2(buffer));
 			if (FST::execute(fst2, line))
 			{
+				if (previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
 				strcpy_s(id_entry.function, function[index]);
 				id_entry.index = index;
@@ -474,6 +485,14 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
+				if ((id_entry.value.vint > 2147483647 || id_entry.value.vint < -2147483648) && previousDataType == IT::INT)
+				{
+					throw ERROR_THROW_IN(307, line, -1);
+				}
+				else if ((id_entry.value.vint > 4294967295 || id_entry.value.vint < 0) && previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				strcpy_s(id_entry.id, "INT");
 				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(lex, idt, id_entry, line, id);
@@ -484,6 +503,10 @@ namespace LT
 			FST::FST fst8(NEG_NUMBER8(buffer));
 			if (FST::execute(fst8, line))
 			{
+				if (previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				LexEntryFill(lex_entry, line, LEX_LITERAL, idt.size);
 				strcpy_s(id_entry.function, function[index]);
 				id_entry.index = index;
@@ -491,6 +514,14 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
+				if ((id_entry.value.vint > 2147483647 || id_entry.value.vint < -2147483648) && previousDataType == IT::INT)
+				{
+					throw ERROR_THROW_IN(307, line, -1);
+				}
+				else if ((id_entry.value.vint > 4294967295 || id_entry.value.vint < 0) && previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				strcpy_s(id_entry.id, "INT");
 				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(lex, idt, id_entry, line, id);
@@ -590,6 +621,14 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = atoi(buffer);
+				if ((id_entry.value.vint > 2147483647 || id_entry.value.vint < -2147483648) && previousDataType == IT::INT)
+				{
+					throw ERROR_THROW_IN(307, line, -1);
+				}
+				else if ((id_entry.value.vint > 4294967295 || id_entry.value.vint < 0) && previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				strcpy_s(id_entry.id, "INT");
 				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(lex, idt, id_entry, line, id);
@@ -607,6 +646,14 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
+				if ((id_entry.value.vint > 2147483647 || id_entry.value.vint < -2147483648) && previousDataType == IT::INT)
+				{
+					throw ERROR_THROW_IN(307, line, -1);
+				}
+				else if ((id_entry.value.vint > 4294967295 || id_entry.value.vint < 0) && previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				strcpy_s(id_entry.id, "INT");
 				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(lex, idt, id_entry, line, id);
@@ -623,6 +670,14 @@ namespace LT
 				id_entry.idtype = IT::L;
 				id_entry.idxfirstLE = lex.size - 1;
 				id_entry.value.vint = ConvertToDecimal(buffer);
+				if ((id_entry.value.vint > 2147483647 || id_entry.value.vint < -2147483648) && previousDataType == IT::INT)
+				{
+					throw ERROR_THROW_IN(307, line, -1);
+				}
+				else if ((id_entry.value.vint > 4294967295 || id_entry.value.vint < 0) && previousDataType == IT::PINT)
+				{
+					throw ERROR_THROW_IN(308, line, -1);
+				}
 				strcpy_s(id_entry.id, "INT");
 				strcat(id_entry.id, IntegerToString(++intliteral));
 				Add(lex, idt, id_entry, line, id);
@@ -657,6 +712,10 @@ namespace LT
 					Add(lex, lex_entry);
 					return lex;
 				}
+			}
+			if (strlen(buffer) > 9)
+			{
+				throw ERROR_THROW_IN(311, line, -1)
 			}
 			LexEntryFill(lex_entry, line, LEX_ID, idt.size);
 
@@ -698,13 +757,31 @@ namespace LT
 				break;
 			case IT::P:
 				id_entry.idtype = IT::P;
-				if (id_entry.iddatatype == IT::INT) id_entry.value.vint = 0;
-				else if (id_entry.iddatatype == IT::STR) strcpy_s(id_entry.value.vstr.str, "\0");
+				if (id_entry.iddatatype == IT::INT)
+				{
+					id_entry.value.vint = 0;
+				}
+				else if (id_entry.iddatatype == IT::PINT)
+				{
+					id_entry.value.vpint = 0;
+				}
+				else if (id_entry.iddatatype == IT::STR) {
+					strcpy_s(id_entry.value.vstr.str, "\0");
+				}
+				else if (id_entry.iddatatype == IT::SIGN)
+				{
+					id_entry.value.vsign = '\0';
+				}
+				else if (id_entry.iddatatype == IT::BOOL)
+				{
+					strcpy_s(id_entry.value.vbool.str, "False");
+					id_entry.value.vbool.value = 0;
+				}
 				strcpy_s(id_entry.function, function[index]);
 				break;
 			}
-			previousDataType = IT::NONE;
-			Add(lex, idt, id_entry, line, id, withinCall);
+			//previousDataType = IT::NONE;
+			Add(lex, idt, id_entry, line, id);
 
 			if (IT::IsId(idt, buffer, function[index]) != 0xffffffff)
 				lex_entry.idxTI = IT::IsId(idt, buffer, function[index]);
@@ -716,10 +793,10 @@ namespace LT
 		}
 
 		if (buffer[0] != '\0') {
-			std::cout << "\n----------------------------------------------------------\n";
 			std::cout << "\nОшибка разбора цепочки ";
 			for (int i = 0; buffer[i] != '\0'; i++) std::cout << buffer[i];
-			std::cout << " зафиксирована:\nСтрока: " << line << " Позиция: " << id << std::endl;
+			std::cout << " зафиксирована:\n";
+			throw ERROR_THROW_IN(104, line, -1);
 		}
 		return lex;
 	}
@@ -772,7 +849,6 @@ namespace LT
 			}
 			else if (input.text[i] != ' ' && input.text[i] != '|')
 			{
-
 				if ((input.text[i] == '(' || input.text[i] == ')' || \
 					input.text[i] == '{' || input.text[i] == '}' || \
 					input.text[i] == ',' || input.text[i] == ';' || \
@@ -809,6 +885,7 @@ namespace LT
 			}
 			else if (input.text[i] == '|')
 			{
+				begin = i + 1;
 				bufferIndex = 0;
 				lex = LT::CreateEntry(lex, idt, buffer, lineCounter, lexCounter);
 				lexCounter++;
@@ -832,7 +909,7 @@ namespace LT
 				}
 			}
 		}
-		if (!mainDefined) throw ERROR_THROW(105);
+		if (!mainDefined) throw ERROR_THROW(300);
 		lexcopy = lex;
 		return;
 	}

@@ -1,29 +1,23 @@
 from StandardLibrary import *
 
-def Max(first, second):
-	if first > second:
-		return first
-	elif second > first:
-		return second
-	return 1
-
-def Min(first, second):
-	if first < second:
-		return first
-	elif second > first:
-		return second
+def Power(base, value):
+	if value == 1:
+		return (base)
 	else:
-		return 0
-	return 1
+		return (base * Power(base,value - 1))
+	return (0)
 
 def main():
-	value = 20
-	mess = "Conjuction of two numbers equals: "
-	conj = Max(10,20) & Min(30,40)
+	num = 5
+	val = 3
+	result = IntStr(Power(num,val))
 
-	result = IntStr(conj)
-
-	print (mess + result)
-	return 1
+	quest = ",does it means that Python is cool?"
+	answ = "-It seems like that!\n"
+	print ("-How much is " + IntStr(num) + " to the " + IntStr(val) + "d power?")
+	print ("-It would be " + IntStr(result))
+	print ("-Oh" + quest)
+	print (answ)
+	return (1)
 
 main()

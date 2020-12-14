@@ -6,6 +6,7 @@
 #include <string>
 
 #define uint unsigned int
+
 // control panel
 
 //#define DEBUG_MODE

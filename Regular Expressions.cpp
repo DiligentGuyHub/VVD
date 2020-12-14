@@ -490,6 +490,60 @@
 						  FST::NODE()\
 }
 
+#define INV_NUMBER8(string) {  string, \
+						  5, \
+						  FST::NODE(1,	FST::RELATION('~', 1)),\
+						  FST::NODE(1,	FST::RELATION('8', 2)), \
+						  FST::NODE(1,	FST::RELATION('.', 3)),	\
+						  FST::NODE(24,	FST::RELATION('1', 3), FST::RELATION('0', 3), \
+										FST::RELATION('2', 3), FST::RELATION('7', 3), \
+										FST::RELATION('3', 3), FST::RELATION('6', 3), \
+										FST::RELATION('4', 3), FST::RELATION('5', 3), \
+										FST::RELATION('1', 4), FST::RELATION('0', 4), \
+										FST::RELATION('2', 4), FST::RELATION('7', 4), \
+										FST::RELATION('3', 4), FST::RELATION('6', 4), \
+										FST::RELATION('4', 4), FST::RELATION('5', 4), \
+										FST::RELATION('1', 5), FST::RELATION('0', 5), \
+										FST::RELATION('2', 5), FST::RELATION('7', 5), \
+										FST::RELATION('3', 5), FST::RELATION('6', 5), \
+										FST::RELATION('4', 5), FST::RELATION('5', 5)), \
+						  FST::NODE()\
+}
+
+
+#define INV_NUMBER2(string) { string, \
+						  5, \
+							  FST::NODE(1,	FST::RELATION('~', 1)),\
+							  FST::NODE(1,	FST::RELATION('2', 2)), \
+							  FST::NODE(1,	FST::RELATION('.', 3)),	\
+							  FST::NODE(6,	FST::RELATION('1', 3), FST::RELATION('0', 3), \
+											FST::RELATION('1', 4), FST::RELATION('0', 4), \
+											FST::RELATION('1', 5), FST::RELATION('0', 5)), \
+							  FST::NODE()\
+}
+
+#define INV_NUMBER10(string) {	string, \
+							3, \
+							FST::NODE(1,	FST::RELATION('~', 1)),\
+							FST::NODE(30,	\
+											FST::RELATION('1', 1), FST::RELATION('2', 1), \
+											FST::RELATION('3', 1), FST::RELATION('4', 1), \
+											FST::RELATION('5', 1), FST::RELATION('6', 1), \
+											FST::RELATION('7', 1), FST::RELATION('8', 1), \
+											FST::RELATION('9', 1), FST::RELATION('0', 1), \
+											FST::RELATION('1', 2), FST::RELATION('2', 2), \
+											FST::RELATION('3', 2), FST::RELATION('4', 2), \
+											FST::RELATION('5', 2), FST::RELATION('6', 2), \
+											FST::RELATION('7', 2), FST::RELATION('8', 2), \
+											FST::RELATION('9', 2), FST::RELATION('0', 2), \
+											FST::RELATION('1', 3), FST::RELATION('2', 3), \
+											FST::RELATION('3', 3), FST::RELATION('4', 3), \
+											FST::RELATION('5', 3), FST::RELATION('6', 3), \
+											FST::RELATION('7', 3), FST::RELATION('8', 3), \
+											FST::RELATION('9', 3), FST::RELATION('0', 3)),\
+						  FST::NODE() \
+}
+
 // 66
 //#define CYRILLIC(n)\
 //										FST::RELATION('à', n), FST::RELATION('í', n), \

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <time.h>
 
+#define PYTHON_EXECUTE			std::cout << "\n\nВыполнение сгенерированного python-скрипта:\n\n"
 #define STANDARD_LIBRARY		*file << "from StandardLibrary import *\n\n"
 
 #define OPERAND_NAME(n)			idt.table[lex.table[n].idxTI].id

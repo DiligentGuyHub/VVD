@@ -66,22 +66,6 @@ namespace IT
 		int id
 	);
 
-	void Add(						// добавление строки в таблицу идентификаторов
-		LT::LexTable& lex,
-		IdTable& idtable,			// экземпляр таблицы идентификаторов
-		Entry entry,				// добавляемая строка таблицы идентификаторов
-		int line,
-		int id,
-		bool& withinCall			// флаг вызова функции (для считывания параметров)
-	);
-
-	void UpdatePrevious(
-		IdTable& idt,
-		Entry entry,
-		bool isNumber
-	);
-
-
 	Entry GetEntry(					// получение строки таблицы идентификаторов
 		IdTable& idtable,			// экземпляр таблицы идентификаторов
 		int n						// номер получаемой строки
@@ -95,13 +79,6 @@ namespace IT
 
 	void Delete(					// удаление таблицы идентификаторов (освобождение памяти) 
 		IdTable& idtable			// экземпляр таблицы идентификаторов
-	);
-
-	IdTable& CreateEntry(
-		IdTable& idtable,
-		char* buffer,
-		int line,
-		int id
 	);
 
 	void IdTableOut(

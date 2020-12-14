@@ -42,11 +42,11 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef SEMANTIC_ANALYSIS
-		//Semantic::FindExpressions(lex, idt);
+		Semantic::General(lex, idt);
 #endif
 		
 #ifdef PYTHON_CODE_GENERATION
-		char python[] = "VVD_python/VVD_python.py";
+		char python[] = "C:/Users/longr/OneDrive/Документы/Courseproject/VVD/VVD_python/VVD_python.py";
 		Python::General(lex, idt, python);
 #endif
 
@@ -54,6 +54,9 @@ int main(int argc, char* argv[])
 		LexTableOut(lex);
 		IdTableOut(idt);
 #endif
+
+		PYTHON_EXECUTE;
+		system("python C:/Users/longr/OneDrive/Документы/Courseproject/VVD/VVD_python/VVD_python.py");
 
 		WriteLog(log);
 		WriteParm(log, parm);

@@ -135,7 +135,6 @@ namespace Python
 	void Expression(LT::LexTable& lex, IT::IdTable& idt, std::wofstream* file, int& position)
 	{
 		int sourceposition = 0;
-		//PolishNotation::PolishNotation(++position, lex, idt);
 		for (position; ; position++)
 		{
 			switch (lex.table[position].lexema)
@@ -300,7 +299,7 @@ namespace Python
 				position--;
 				return;
 			}
-		}
+ 		}
 	}
 
 }

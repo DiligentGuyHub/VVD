@@ -7,6 +7,8 @@
 
 namespace LT 
 {
+	extern int begin;
+
 	LexTable& CreateEntry
 	(
 		LexTable& lex,

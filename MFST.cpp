@@ -215,7 +215,8 @@ namespace MFST
 		{
 			errid = grebach.getRule(diagnosis[n].nrule).iderror;
 			Error::ERROR err = Error::GetError(errid);
-			sprintf_s(buf, MFST_DIAGN_MAXSIZE, "%d: строка %d,  %s", errid, lex.table[lpos].sn, err.message);
+			//sprintf_s(buf, MFST_DIAGN_MAXSIZE, "%d: строка %d,  %s", errid, lex.table[lpos].sn, err.message);
+			throw ERROR_THROW_IN(errid, lex.table[lpos].sn, -1);
 			rc = buf;
 		}
 		return rc;

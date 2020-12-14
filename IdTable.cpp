@@ -32,35 +32,22 @@ namespace IT {
 				// или если совпало имя и тип идентификатора - функция
 				)
 			{
-				lex.table[idt.table[i].idxfirstLE].idxTI = i;
-				return;
-			}
-		}
-		//if (entry.iddatatype == NONE) throw ERROR_THROW_IN(121, line, id);
-		idt.table[idt.size++] = entry;
-		return;
-	}
-
-	void Add(LT::LexTable& lex, IdTable& idt, Entry entry, int line, int id, bool& withinCall)
-	{
-		if (idt.size >= idt.maxsize) throw ERROR_THROW(107);
-
-		for (int i = 0; i < idt.size; i++)
-		{
-			// если имя совпало и идентификатор не является литералом
-			if ((!strcmp(idt.table[i].id, entry.id) && entry.idtype != L && \
-				// и индекс его вхождения меньше или равен индексу совпавшего с ним идентификатора 
-				// и совпало имя функции, где идентификатор объявлен
-				idt.table[i].index <= entry.index && !strcmp(idt.table[i].function, entry.function)) \
-				// или если совпало имя и тип идентификатора - функция
-				)
-			{
-				// если имя совпало и это фунция
-				lex.table[idt.table[i].idxfirstLE].idxTI = i;
+				if (lex.table[lex.size - 2].lexema != LEX_FUNCTION && lex.table[lex.size - 2].lexema != LEX_DEF)
+				{
+					lex.table[idt.table[i].idxfirstLE].idxTI = i;
+				}
+				else
+				{
+					throw ERROR_THROW_IN(303, line, 3);
+				}
 				return;
 			}
 			else if (!strcmp(idt.table[i].id, entry.id) && idt.table[i].idtype == F)
 			{
+				if (lex.table[lex.size - 2].lexema == LEX_FUNCTION || lex.table[lex.size - 2].lexema == LEX_DEF)
+				{
+					throw ERROR_THROW_IN(303, line, 3);
+				}
 				// добавить функцию в список вызовов (пока без параметров)
 				return;
 			}

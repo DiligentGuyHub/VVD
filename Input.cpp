@@ -36,7 +36,7 @@ namespace In {
 			switch (in_text.code[simbol])
 			{
 				case in_text.T:
-					if (simbol == '\'')
+					if (simbol == '"')
 						readExtraSimbols = !readExtraSimbols;
 
 					text[in_text.size] = simbol;

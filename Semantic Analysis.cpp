@@ -5,295 +5,381 @@
 
 namespace Semantic
 {
-	// Пошаговый анализ выражений, входящих в состав таблицы лексем
-	void FindExpressions(LT::LexTable& lex, IT::IdTable& idt)
+	int begin = 0;
+	int line = 1;
+	IT::IDDATATYPE functiontype = IT::NONE;
+	char stdlib[5][8]{ "StrLen", "StrInt", "IntStr", "PintStr", "SignInt" };
+
+	void General(LT::LexTable& lex, IT::IdTable& idt)
 	{
-		uint start_time = clock(), end_time;
-		int begin = 0; // позиция итератора в начале каждой строки, для удобства вывода сообщений о позиции лексемы в строке
-		for (int i = 0, lineCounter = 0; i < lex.size; i++)
-		{
-			// определение текущего номера строки
-			if (lex.table[i].sn != lineCounter) 
-			{
-				begin = i;
-				lineCounter = lex.table[i].sn;
-				if (lineCounter == 7)
-				{
-					int a = 10;
-				}
-			}
-			// если условная конструкция if/elif
-			if (lex.table[i].lexema == '?' || lex.table[i].lexema == 'z')
-			{
-				CheckoutBooleanExpression(lex, idt, begin - 1, lineCounter, i);
-			}
-			// если объявление функции
-			else if (lex.table[i].lexema == 'f')
-			{
-				while (lex.table[i].sn == lineCounter)
-				{
-					i++;
-				}
-			}
-			// если идентификатор
-			else if (lex.table[i].lexema == 'i')
-			{
-				switch (idt.table[lex.table[i].idxTI].iddatatype)
-				{
-					case IT::INT:
-						CheckoutIntegerExpression(lex, idt, begin - 1, lineCounter, i);
-						break;
-					case IT::PINT:
-						CheckoutIntegerExpression(lex, idt, begin - 1, lineCounter, i);
-						break;
-					case IT::BOOL:
-						CheckoutBooleanExpression(lex, idt, begin - 1, lineCounter, i);
-						break;
-					case IT::STR:
-						CheckoutStringExpression(lex, idt, begin - 1, lineCounter, i);
-						break;
-					case IT::SIGN:
-						CheckoutSignExpression(lex, idt, begin - 1, lineCounter, i);
-						break;
-					default:
-						throw ERROR_THROW_IN(305, lineCounter, i - begin);
-				}
-			}
-			else if (lex.table[i].lexema == 'p')
-			{
-				CheckoutPrint(lex, idt, begin, lineCounter, i);
-			}
-		}
-		end_time = clock();
+		unsigned int start = clock();
+		Function(lex, idt);
+		unsigned int end = clock();
 		std::cout << "\nСемантический анализ завершен успешно\nВремя выполнения: ";
-		if (end_time - start_time == 0)
+		if (end - start == 0)
 		{
 			std::cout << "< 1 мс\n";
 		}
-		else
+		else 
 		{
-			std::cout << end_time - start_time << " мс\n";
+			std::cout << end - start << " мс\n";
 		}
-		//PolishNotation::Checkout(lex, idt);
 		return;
 	}
-
-	// Проверка выражений с целочисленными переменными (не логические)
-	// допустимые типы: int, pint
-	// допустимые операции: арифметические, битовые (один из двух)
-	void CheckoutIntegerExpression(LT::LexTable& lex, IT::IdTable& idt, int begin, int line, int& pos)
+	void Function(LT::LexTable& lex, IT::IdTable& idt)
 	{
-		LT::OPERATIONTYPE type = LT::UNDEF;
 
-		for (int i = pos; ; i++)
+		char* functionname;
+		for (int position = 0; position < lex.size; position++)
 		{
-			// если лексема явялется операцией
-			if (lex.table[i].operation != NULL)
+			if (lex.table[position].lexema)
 			{
-				// если тип операции не определен
-				if (type == LT::UNDEF)
+				if (lex.table[position].lexema == LEX_FUNCTION && lex.table[position + 1].lexema != LEX_MAIN)
 				{
-					// логический тип операции вызывает ошибку, так как недопустим в пределах не булевых выражений
-					if (lex.table[i].operationtype == LT::L)
+					functionname = idt.table[lex.table[++(++position)].idxTI].id;
+					functiontype = OPERAND_DATATYPE(position);
+					if (int(functionname[0]) > 90)
 					{
-						throw ERROR_THROW_IN(313, line, i - begin);
+						throw ERROR_THROW_IN(301, line, position - begin + 1);
 					}
-					// тип операции может быть определен как арифметический или битовый
-					type = lex.table[i].operationtype;
-				}
-				// если же тип операции уже определен
-				else if (type != LT::UNDEF)
-				{
-					// если он соответствует ранее определенному
-					if (type == lex.table[i].operationtype)
+					for (++position; lex.table[position].lexema != LEX_LEFTBRACE; position++)
 					{
-						continue;
 					}
-					// в противном случае ошибка
-					throw ERROR_THROW_IN(311, line, i - begin); // Ошибка типа используемого выражения
-				}
-			}
-			// если же лексема является идентификатором/литералом и не равна ни одному из целочисленных типов
-			else if (lex.table[i].idxTI != LT_TI_NULLIDX && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::INT && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::PINT
-				)
-			{
-				// если используется не инициализированная переменная,то ошибка
-				if (idt.table[lex.table[i].idxTI].iddatatype == IT::NONE)
-				{
-					throw ERROR_THROW_IN(305, line, i - begin);
-				}
-				// если имеет место несоответствие типов, то ошибка
-				throw ERROR_THROW_IN(313, line, i - begin);
-			}
-			// если мы вышли за пределы строки, то завершаем работу функции
-			if (lex.table[i + 1].sn != line)
-			{
-				return;
-			}
-		}
-	}
-
-	// Проверка логических выражений
-	// допустимые типы: int, pint, bool
-	// допустимые операции: логические
-	void CheckoutBooleanExpression(LT::LexTable& lex, IT::IdTable& idt, int begin, int line, int& pos)
-	{
-		int operationcounter = 0;
-		for (int i = pos; ; i++)
-		{
-			// если операция определена, но не представляет логический тип, то ошибка
-			if (lex.table[i].operation != NULL && lex.table[i].operationtype != LT::L)
-			{
-				throw ERROR_THROW_IN(311, line, i - begin); // Ошибка типа используемого выражения
-			}
-			else if (lex.table[i].operationtype == LT::L)
-			{
-				if (operationcounter > 0)
-				{
-					throw ERROR_THROW_IN(315, line, i - begin);
+					WithinFunction(lex, idt, position);
+					functiontype = IT::NONE;
 				}
 				else
 				{
-					operationcounter++;
+					WithinFunction(lex, idt, position);
+					break;
 				}
 			}
-			// если же лексема является идентификатором/литералом, но не пренадлежит ни к одному из целочиленных типов, то ошибка
-			else if (lex.table[i].idxTI != LT_TI_NULLIDX && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::INT &&\
-				idt.table[lex.table[i].idxTI].iddatatype != IT::PINT && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::BOOL \
-				)
+		}
+	}
+	void WithinFunction(LT::LexTable& lex, IT::IdTable& idt, int& position)
+	{
+		for (position; lex.table[position].lexema != LEX_BRACELET; position++)
+		{
+			if (lex.table[position].sn != line)
 			{
-				throw ERROR_THROW_IN(313, line, i - begin);
+				line = lex.table[position].sn;
+				begin = position;
 			}
-			// если мы вышли за пределы строки, то завершаем работу функции
-			if (lex.table[i + 1].sn != line)
+			switch (lex.table[position].lexema)
 			{
-				pos = i;
-				return;
+			case LEX_EQUAL:
+				Expression(lex, idt, position);
+				break;
+			case LEX_IF:
+				Condition(lex, idt, position);
+				break;
+			case LEX_PRINT:
+				Print(lex, idt, position);
+				break;
+			case LEX_RETURN:
+				Return(lex, idt, position);
+				break;
+			default:
+				break;
 			}
 		}
 	}
 
-	// Проверка выражений над строковым типом
-	// Допустимый тип: string
-	// Допустимые операции: конкатенация (+)
-	void CheckoutStringExpression(LT::LexTable& lex, IT::IdTable& idt, int begin, int line, int& pos)
+	void Call(LT::LexTable& lex, IT::IdTable& idt, int& position)
 	{
-		for (int i = pos; ; i++)
+		IT::IDDATATYPE prev = IT::NONE;
+		LT::OPERATIONTYPE op = LT::UNDEF;
+		for (++position; lex.table[position].lexema != LEX_RIGHTHESIS; position++)
 		{
-			// если операция определена, но не является конкатенацией
-			if (lex.table[i].operation != NULL && lex.table[i].operation != '+')
+			switch (lex.table[position].lexema)
 			{
-				throw ERROR_THROW_IN(311, line, i - begin); // Ошибка типа используемого выражения
-			}
-			// если же лексема является идентификатором/литералом, но не пренадлежит ни к одному из целочиленных типов, то ошибка
-			else if (lex.table[i].idxTI != LT_TI_NULLIDX && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::STR && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::SIGN
-				)
-			{
-				throw ERROR_THROW_IN(313, line, i - begin);
-			}
-			// если мы вышли за пределы строки, то завершаем работу функции
-			if (lex.table[i + 1].sn != line)
-			{
-				pos = i;
-				return;
-			}
-		}
-	}
-
-	// Проверка выражений над символьными типом
-	// Допустимый тип: sign
-	// Допустимые операции: суммирование кодов символов (+)
-	void CheckoutSignExpression(LT::LexTable& lex, IT::IdTable& idt, int begin, int line, int& pos)
-	{
-		for (int i = pos; ; i++)
-		{
-			// если тип операций определен, но не относится к символьным, то ошибка
-			if (lex.table[i].operation != NULL && lex.table[i].operation != '+')
-			{
-				throw ERROR_THROW_IN(311, line, i - begin); // Ошибка типа используемого выражения
-			}
-			// если же лексема является идентификатором, но ее тип не соответствует символьному, то ошибка
-			else if (lex.table[i].idxTI != LT_TI_NULLIDX && \
-				idt.table[lex.table[i].idxTI].iddatatype != IT::SIGN
-				)
-			{
-				throw ERROR_THROW_IN(313, line, i - begin);
-			}
-			// если мы вышли за пределы строки, то завершаем работу функции
-			if (lex.table[i + 1].sn != line)
-			{
-				pos = i;
-				return;
-			}
-		}
-	}
-
-	void CheckoutPrint(LT::LexTable& lex, IT::IdTable& idt, int begin, int line, int& pos)
-	{
-		LT::OPERATIONTYPE type = LT::UNDEF;
-		IT::IDDATATYPE previous = IT::NONE;
-		int printposition = pos - 1;
-
-		for (int i = pos; ; i++)
-		{
-			// если лексема явялется операцией
-			if (lex.table[i].operation != NULL)
-			{
-				// если тип операции не определен
-				if (type == LT::UNDEF)
+			case LEX_ID:
+				if (OPERAND_TYPE(position) == IT::F)
 				{
-					// тип операции может быть определен единожды и не может изменяться в пределах выражения
-					type = lex.table[i].operationtype;
-				}
-				// если же тип операции уже определен
-				else if (type != LT::UNDEF)
-				{
-					// если он соответствует ранее определенному
-					if (type == lex.table[i].operationtype)
+					if (prev == IT::NONE)
 					{
-						continue;
-					}
-					// в противном случае ошибка
-					throw ERROR_THROW_IN(312, line, i - begin); // Ошибка типа используемого выражения
-				}
-			}
-			// если же лексема является идентификатором/литералом
-			else if (lex.table[i].idxTI != LT_TI_NULLIDX)
-			{
-				// если тип операндов не определен
-				if (previous == IT::NONE)
-				{
-					previous = idt.table[lex.table[i].idxTI].iddatatype;
-				}
-				// если тип операндов определен
-				else
-				{
-					// если оба тип целочисленные, либо оба типа символьные, либо типы равны между собой
-					if ((previous == IT::PINT && idt.table[lex.table[i].idxTI].iddatatype == IT::INT) || \
-						(previous == IT::INT && idt.table[lex.table[i].idxTI].iddatatype == IT::PINT) || \
-						(previous == IT::STR && idt.table[lex.table[i].idxTI].iddatatype == IT::SIGN) || \
-						(previous == IT::SIGN && idt.table[lex.table[i].idxTI].iddatatype == IT::STR) || \
-						previous == idt.table[lex.table[i].idxTI].iddatatype \
-						)
-					{
-						continue;
+						prev = OPERAND_DATATYPE(position);
 					}
 					else
 					{
-						throw ERROR_THROW_IN(313, line, i - begin);
+						CHECK_DATATYPE(position);
+					}
+					Call(lex, idt, position);
+				}
+				else
+				{
+					if (prev == IT::NONE)
+					{
+						if (OPERAND_DATATYPE(position) == IT::NONE)
+						{
+							throw ERROR_THROW_IN(304, line, position - begin + 1);
+						}
+						prev = OPERAND_DATATYPE(position);
 					}
 				}
+				break;
+			case LEX_LITERAL:
+				CHECK_DATATYPE(position);
+				break;
+			case LEX_LEFTHESIS:
+				break;
+			case LEX_OPERATION:
+				CHECK_OPERATION(position);
+				break;
+			default:
+				break;
 			}
-			// если мы вышли за пределы строки, то завершаем работу функции
-			if (lex.table[i + 1].sn != line)
+
+		}
+		if (lex.table[position + 1].lexema == LEX_SEMICOLON)
+		{
+			return;
+		}
+		else if (lex.table[position + 1].lexema == LEX_COMMA)
+		{
+			return;
+		}
+	}
+
+	void Expression(LT::LexTable& lex, IT::IdTable& idt, int& position)
+	{
+		int sourceposition = 0;
+		IT::IDDATATYPE prev = IT::NONE;
+		LT::OPERATIONTYPE op = LT::UNDEF;
+		for (position; ; position++)
+		{
+			switch (lex.table[position].lexema)
 			{
+			case LEX_EQUAL:
+				sourceposition = position - 1;
+				prev = OPERAND_DATATYPE(sourceposition);
+				break;
+			case LEX_ID:
+				if (OPERAND_TYPE(position) == IT::UNDEF || OPERAND_DATATYPE(position) == IT::NONE)
+				{
+					throw ERROR_THROW_IN(304, line, position - begin + 1);
+				}
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					CHECK_DATATYPE(position);
+					Call(lex, idt, position);
+				}
+				else
+				{
+					CHECK_DATATYPE(position);
+				}
+				break;
+			case LEX_LITERAL:
+				CHECK_DATATYPE(position);
+				break;
+			case LEX_OPERATION:
+				if (prev == IT::BOOL || prev == IT::STR || prev == IT::SIGN)
+				{
+					CHECK_OPERATION(position);
+				}
+				else {
+					if (op == LT::UNDEF)
+					{
+						op = lex.table[position].operationtype;
+					}
+					else
+					{
+						CHECK_OPERATION(position);
+					}
+				}
+				break;
+			case LEX_SEMICOLON:
+				begin = position + 1;
 				return;
+			default:
+				break;
+			}
+		}
+	}
+	void Condition(LT::LexTable& lex, IT::IdTable& idt, int& position)
+	{
+		IT::IDDATATYPE prev = IT::BOOL;
+		LT::OPERATIONTYPE op = LT::L;
+		for (position; ; position++)
+		{
+			switch (lex.table[position].lexema)
+			{
+			case LEX_ID:
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					if (prev == IT::NONE)
+					{
+						prev = OPERAND_DATATYPE(position);
+					}
+					else
+					{
+						CHECK_DATATYPE(position);
+					}
+					Call(lex, idt, position);
+				}
+				else
+				{
+					if (prev == IT::NONE)
+					{
+						if (OPERAND_DATATYPE(position) == IT::NONE)
+						{
+							throw ERROR_THROW_IN(304, line, position - begin + 1);
+						}
+						prev = OPERAND_DATATYPE(position);
+					}
+					else
+					{
+						CHECK_DATATYPE(position);
+					}
+				}
+				break;
+			case LEX_OPERATION:
+				CHECK_OPERATION(position);
+				break;
+			case LEX_LITERAL:
+				CHECK_DATATYPE(position);
+				break;
+			case LEX_RIGHTHESIS:
+				break;
+			case LEX_LEFTBRACE:
+				WithinFunction(lex, idt, position);
+				if (lex.table[position + 1].lexema != LEX_ELIF && lex.table[position + 1].lexema != LEX_ELSE)
+				{
+					return;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	void Print(LT::LexTable& lex, IT::IdTable& idt, int& position)
+	{
+		IT::IDDATATYPE prev = IT::NONE;
+		LT::OPERATIONTYPE op = LT::UNDEF;
+		for (position; ; position++)
+		{
+			switch (lex.table[position].lexema)
+			{
+			case LEX_ID:
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					if (prev == IT::NONE)
+					{
+						prev = OPERAND_DATATYPE(position);
+					}
+					else
+					{
+						CHECK_DATATYPE(position);
+					}
+					Call(lex, idt, position);
+				}
+				else
+				{
+					if (prev == IT::NONE)
+					{
+						if (OPERAND_DATATYPE(position) == IT::NONE)
+						{
+							throw ERROR_THROW_IN(304, line, position - begin + 1);
+						}
+						prev = OPERAND_DATATYPE(position);
+					}
+					else
+					{
+						CHECK_DATATYPE(position);
+					}
+				}
+				break;
+			case LEX_OPERATION:
+				if (op == LT::UNDEF)
+				{
+					op = lex.table[position].operationtype;
+				}
+				else
+				{
+					CHECK_OPERATION(position);
+				}
+				break;
+			case LEX_LITERAL:
+				if (prev == IT::NONE)
+				{
+					prev = OPERAND_DATATYPE(position);
+				}
+				else
+				{
+					CHECK_DATATYPE(position);
+				}
+				break;
+			case LEX_SEMICOLON:
+				begin = position + 1;
+				return;
+			default:
+				break;
+			}
+		}
+	}
+	void Return(LT::LexTable& lex, IT::IdTable& idt, int& position)
+	{
+		IT::IDDATATYPE prev = functiontype;
+		LT::OPERATIONTYPE op = LT::UNDEF;
+		for (position; ; position++)
+		{
+			switch (lex.table[position].lexema)
+			{
+			case LEX_ID:
+				if (OPERAND_TYPE(position) == IT::F)
+				{
+					if (prev == IT::NONE)
+					{
+						prev = OPERAND_DATATYPE(position);
+					}
+					else
+					{
+						CHECK_DATATYPE(position);
+					}
+					Call(lex, idt, position);
+				}
+				else
+				{
+					if (prev == IT::NONE)
+					{
+						if (OPERAND_DATATYPE(position) == IT::NONE)
+						{
+							throw ERROR_THROW_IN(304, line, position - begin + 1);
+						}
+						prev = OPERAND_DATATYPE(position);
+					}
+					else
+					{
+						CHECK_DATATYPE(position);
+					}
+				}
+				break;
+			case LEX_OPERATION:
+				if (op == LT::UNDEF)
+				{
+					op = lex.table[position].operationtype;
+				}
+				else
+				{
+					CHECK_OPERATION(position);
+				}
+				break;
+			case LEX_LITERAL:
+				if (prev == IT::NONE)
+				{
+					prev = OPERAND_DATATYPE(position);
+				}
+				else
+				{
+					CHECK_DATATYPE(position);
+				}
+				break;
+			case LEX_SEMICOLON:
+				begin = position + 1;
+				return;
+			default:
+				break;
 			}
 		}
 	}

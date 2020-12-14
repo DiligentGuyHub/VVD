@@ -1,6 +1,6 @@
 
 -------ПРОТОКОЛ:-------
-ВРЕМЯ ВЫПОЛНЕНИЯ: 11.12.2020 пятница 21:34:17
+ВРЕМЯ ВЫПОЛНЕНИЯ: 14.12.2020 Monday 13:44:40
 
 ------ПАРАМЕТРЫ------
 -in:  in.txt
@@ -9,12 +9,12 @@
 
 ------ИСХОДНЫЕ ДАННЫЕ------
 
-Всего символов: 476
-Всего строк: 31
-Всего пропущено: 0
+Всего символов: 506
+Всего строк: 22
+Всего пропущено: 19
 
 Преобразованный файл: 
-function int Max(int first,pint second){|if(first > second){|return first;|}|elif(second > first){|return second;|}|return 1;|}||function int Min(int first,pint second){|if(first < second){|return first;|}|elif(second > first){|return second;|}|else{|return 0;|}|return 1;|}||function main{|def int value=20;|def string mess="Conjuction of two numbers equals: ";|def int conj=Max(10,20)& Min(30,40);|def int result=IntStr(conj);|print(mess+result);|return 1;|}
+function int Power(int base,pint value){|if(value== 1){|return(base);|}|else{|return(base*Power(base,value-1));|}|return(0);|}||function main{|def int num=5;|def pint val=3;|def string result=IntStr(Power(num,val));|def string quest=",does it means that Python is cool?";|def string answ="-It seems like that!\n";|print("-How much is "+IntStr(num)+" to the "+IntStr(val)+"d power?");|print("-It would be "+IntStr(result));|print("-Oh"+quest);|print(answ);|return(1);|}
 
 Таблица лексем:
-001 fti(ti,ti){?(ivi){ri;}z(ivi){ri;}rl;}fti(ti,ti){?(ivi){ri;}z(ivi){ri;}e{rl;}rl;}fm{dti:l;dti:l;dti:i(l,l)vi(l,l);dti:i(i);p(ivi);rl;}
+001 fti(ti,ti){?(ivl){r(i);}e{r(ivi(i,ivl));}r(l);}fm{dti:l;dti:l;dti:i(i(i,i));dti:l;dti:l;p(lvi(i)vlvi(i)vl);p(lvi(i));p(lvi);p(i);r(l);}
